@@ -3,60 +3,139 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>五子棋 · Gomoku</title>
+  <title>小游戏中心</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <div class="app">
-    <header class="header">
-      <h1>五子棋</h1>
-      <p class="subtitle">Go + Vanilla JS · 黑白对弈，五子连珠者胜</p>
+  <div class="lobby-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">A</span>
+        <div>
+          <p class="brand-kicker">Arcade Hub</p>
+          <h1>小游戏中心</h1>
+          <p class="brand-subtitle">统一入口，按子目录组织每个小游戏。</p>
+        </div>
+      </div>
+      <div id="auth-chip" class="auth-chip">游客模式</div>
     </header>
 
-    <main class="main">
-      <section class="board-wrapper">
-        <canvas id="board" width="600" height="600" aria-label="五子棋棋盘"></canvas>
+    <section class="hero-grid">
+      <section class="hero-copy card">
+        <p class="eyebrow">多游戏结构</p>
+        <h2>从单一五子棋，升级为可扩展的小游戏大厅。</h2>
+        <p class="hero-text">
+          根目录现在负责大厅入口与导航，五子棋独立放在 <code>/games/gomoku/</code>，
+          新增的连连看放在 <code>/games/linkup/</code>。后续继续扩展更多小游戏时，可以直接按同样结构新增目录。
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="/games/gomoku/" data-game-link="gomoku">进入五子棋</a>
+          <a class="btn ghost" href="/games/linkup/" data-game-link="linkup">试玩连连看</a>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric">
+            <strong>2</strong>
+            <span>当前可玩的小游戏</span>
+          </div>
+          <div class="metric">
+            <strong>/games/*</strong>
+            <span>统一的子游戏目录结构</span>
+          </div>
+          <div class="metric">
+            <strong>0 构建</strong>
+            <span>继续保持原生静态资源模式</span>
+          </div>
+        </div>
       </section>
 
-      <aside class="panel">
-        <div class="status-card">
-          <div class="row">
-            <span class="label">游戏 ID</span>
-            <span id="game-id" class="value mono">—</span>
-          </div>
-          <div class="row">
-            <span class="label">当前回合</span>
-            <span id="turn" class="value">
-              <span class="stone stone-black"></span>
-              <span id="turn-text">黑棋</span>
-            </span>
-          </div>
-          <div class="row">
-            <span class="label">手数</span>
-            <span id="move-count" class="value mono">0</span>
-          </div>
-          <div id="status-banner" class="status-banner playing">对局进行中</div>
-        </div>
-
-        <div class="actions">
-          <button id="btn-new" class="btn primary">新对局</button>
-          <button id="btn-undo" class="btn">悔棋</button>
-          <button id="btn-reset" class="btn">重置棋盘</button>
-        </div>
-
-        <div class="history-card">
-          <h3>落子记录</h3>
-          <ol id="history-list" class="history-list"></ol>
+      <aside class="auth-box card">
+        <p class="eyebrow">快捷入口</p>
+        <h3>继续上次游玩</h3>
+        <p class="auth-hint">
+          大厅会记录你最近进入的小游戏；如果你已登录，五子棋仍会自动恢复登录态。
+        </p>
+        <div class="auth-actions">
+          <a id="continue-link" class="btn primary wide hidden" href="/">继续上次游玩</a>
+          <a class="btn ghost wide" href="/games/gomoku/" data-game-link="gomoku">打开五子棋</a>
+          <a class="btn ghost wide" href="/games/linkup/" data-game-link="linkup">打开连连看</a>
         </div>
       </aside>
-    </main>
+    </section>
 
-    <footer class="footer">
-      <span>提示：黑棋先行，点击棋盘交叉点落子。</span>
-    </footer>
+    <section class="game-section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">游戏列表</h2>
+          <p class="section-desc">一个大厅，多个独立小游戏模块。当前包含账号型对弈与单机休闲两种玩法。</p>
+        </div>
+      </div>
+
+      <div class="game-grid">
+        <article class="game-card card">
+          <div class="game-card-head">
+            <span class="badge">账号系统</span>
+            <span class="game-meta">策略对弈 · Canvas 棋盘</span>
+          </div>
+          <div>
+            <h3>五子棋</h3>
+            <p class="card-desc">
+              保留登录、注册、自动恢复会话和专属对局隔离。适合需要账户体系与持续游玩的玩法。
+            </p>
+          </div>
+          <div class="game-preview">
+            <div class="preview-gomoku"></div>
+          </div>
+          <div class="game-meta">
+            <span>登录 / 注册</span>
+            <span>专属对局</span>
+            <span>悔棋 / 重置</span>
+          </div>
+          <a class="btn primary wide" href="/games/gomoku/" data-game-link="gomoku">进入五子棋</a>
+        </article>
+
+        <article class="game-card card">
+          <div class="game-card-head">
+            <span class="badge">休闲益智</span>
+            <span class="game-meta">单机玩法 · 连线消除</span>
+          </div>
+          <div>
+            <h3>连连看</h3>
+            <p class="card-desc">
+              新增第二个小游戏。选中两个相同图块，若路径在两次转弯内可连通即可消除，直到整盘清空。
+            </p>
+          </div>
+          <div class="game-preview">
+            <div class="preview-linkup">
+              <span>🍎</span>
+              <span>🍎</span>
+              <span>🍋</span>
+              <span>🍋</span>
+              <span>🍇</span>
+              <span>🍇</span>
+              <span>🍓</span>
+              <span>🍓</span>
+            </div>
+          </div>
+          <div class="game-meta">
+            <span>两次转弯内连通</span>
+            <span>重新开始 / 洗牌</span>
+            <span>计时与步数</span>
+          </div>
+          <a class="btn primary wide" href="/games/linkup/" data-game-link="linkup">进入连连看</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="footer-card card">
+      <h3>整理后的前端目录</h3>
+      <ul>
+        <li><code>/web/static/index.html</code>：小游戏大厅入口</li>
+        <li><code>/web/static/games/gomoku/</code>：五子棋页面、样式与脚本</li>
+        <li><code>/web/static/games/linkup/</code>：连连看页面、样式与脚本</li>
+        <li>后续新增小游戏时，只需继续在 <code>/web/static/games/</code> 下扩展</li>
+      </ul>
+    </section>
   </div>
-
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="/app.js"></script>
 </body>
