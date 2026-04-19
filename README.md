@@ -137,6 +137,23 @@ scp gomoku user@host:/srv/gomoku/
 ssh user@host /srv/gomoku/gomoku -addr :80
 ```
 
+### 通过 Nginx 反向代理（推荐生产）
+
+`deploy/nginx/` 下提供了开箱即用的两份 Nginx 配置：
+
+- `gomoku.conf` —— HTTPS + HTTP 跳转 + HSTS + gzip + 静态资源缓存（生产推荐）
+- `gomoku-http.conf` —— 纯 HTTP，适合内网 / 容器 / 上游已 TLS 终止
+
+两份都正确处理了 WebSocket 升级，使 `/ws/rooms/{id}` 长连接能稳定工作。详细使用方法见 [`deploy/nginx/README.md`](deploy/nginx/README.md)。
+
+最简流程：
+
+```bash
+./gomoku -addr 127.0.0.1:8080 &
+sudo cp deploy/nginx/gomoku-http.conf /etc/nginx/conf.d/gomoku.conf
+sudo nginx -t && sudo systemctl reload nginx
+```
+
 ## 许可
 
 MIT License.
