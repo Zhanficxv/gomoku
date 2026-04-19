@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数独</title>
+  <link rel="stylesheet" href="/games/sudoku/styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回游戏大厅</a>
+      <div class="brand">
+        <span class="brand-mark">9</span>
+        <div>
+          <p class="eyebrow">Sudoku</p>
+          <h1>数独</h1>
+          <p class="muted">观察行列宫，填满全部空格。</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="main-column">
+        <section class="hero card">
+          <p class="eyebrow">逻辑推理</p>
+          <h2>在 9x9 棋盘中填入 1 到 9，每行、每列、每宫都不能重复。</h2>
+          <p class="muted">点击空格后从数字面板选择答案，错误会被高亮提示。</p>
+        </section>
+
+        <section class="board-card card">
+          <div class="board-head">
+            <div>
+              <h3>数独棋盘</h3>
+              <p class="muted">目标是填满所有空白格并保持规则正确。</p>
+            </div>
+            <div id="status-chip" class="status-chip">点击任意空格开始填数</div>
+          </div>
+          <div id="board" class="board" aria-label="数独棋盘"></div>
+          <div id="number-pad" class="number-pad"></div>
+        </section>
+      </section>
+
+      <aside class="sidebar">
+        <section class="card panel">
+          <h3>状态信息</h3>
+          <div class="stats">
+            <div class="stat"><span class="label">空白格</span><strong class="value" id="empty-count">0</strong></div>
+            <div class="stat"><span class="label">错误数</span><strong class="value" id="error-count">0</strong></div>
+            <div class="stat"><span class="label">用时</span><strong class="value" id="timer">00:00</strong></div>
+          </div>
+        </section>
+
+        <section class="card actions">
+          <button id="btn-new" class="btn primary" type="button">新题目</button>
+          <button id="btn-clear" class="btn" type="button">清除当前格</button>
+        </section>
+
+        <section class="card rules">
+          <h3>玩法说明</h3>
+          <ul>
+            <li>每行数字 1-9 各出现一次。</li>
+            <li>每列数字 1-9 各出现一次。</li>
+            <li>每个 3x3 宫数字 1-9 各出现一次。</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/games/sudoku/app.js"></script>
+</body>
+</html>

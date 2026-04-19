@@ -1,0 +1,224 @@
+:root {
+  --bg-start: #1e1a10;
+  --bg-end: #0b0905;
+  --surface: rgba(33, 26, 13, 0.84);
+  --surface-soft: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #fff7ea;
+  --muted: #d6c8a5;
+  --accent: #f0b85c;
+  --accent-strong: #d98219;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top, rgba(240, 184, 92, 0.16), transparent 30%),
+    linear-gradient(180deg, var(--bg-start), var(--bg-end));
+}
+
+body { padding: 28px 16px 40px; }
+
+a { color: inherit; text-decoration: none; }
+
+.shell {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(240, 184, 92, 0.35), rgba(255, 255, 255, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 24px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #ffe2ae;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.brand h1,
+.hero h2,
+.card h3 {
+  margin: 0;
+}
+
+.muted {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.back-link {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 22px;
+  align-items: start;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+}
+
+.hero,
+.board-card,
+.panel,
+.actions,
+.rules {
+  padding: 24px;
+}
+
+.hero h2 {
+  margin-top: 12px;
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.board-card { margin-top: 22px; }
+
+.status-chip {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(240, 184, 92, 0.16);
+  color: #ffe8bc;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.board {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.wall { background: #4e3a1a; }
+.floor { background: rgba(255, 255, 255, 0.08); }
+.target { background: rgba(92, 232, 159, 0.18); color: #9cf0bc; }
+.box { background: #f0b85c; color: #291908; }
+.box.on-target { background: #7ce6a6; color: #0d2a16; }
+.player { background: #7cc7ff; color: #081b2a; }
+
+.sidebar {
+  display: grid;
+  gap: 16px;
+}
+
+.stats {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+
+.actions {
+  display: grid;
+  gap: 12px;
+}
+
+.rules ul {
+  margin: 14px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  padding: 13px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  border-color: transparent;
+  color: #2a1807;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%) translateY(16px);
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba(24, 18, 9, 0.95);
+  border: 1px solid var(--border);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .topbar { flex-direction: column; align-items: flex-start; }
+  .actions .btn { width: 100%; }
+}

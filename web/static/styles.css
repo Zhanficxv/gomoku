@@ -488,6 +488,118 @@ code {
   font-size: 24px;
 }
 
+.preview-shooter {
+  background: linear-gradient(180deg, #0d1e45, #040912);
+  position: relative;
+}
+
+.preview-shooter::before {
+  content: "✦";
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  text-shadow:
+    80px 12px rgba(255, 255, 255, 0.55),
+    160px 4px rgba(255, 255, 255, 0.45),
+    220px 20px rgba(255, 255, 255, 0.5);
+}
+
+.preview-shooter::after {
+  content: "🚀";
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 32px;
+}
+
+.preview-sudoku {
+  background: linear-gradient(135deg, #5676ff, #263f97);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 18px;
+  font-size: 22px;
+}
+
+.preview-reversi {
+  background: radial-gradient(circle at center, #257047, #0c2718);
+  position: relative;
+}
+
+.preview-reversi::before,
+.preview-reversi::after {
+  content: "";
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.preview-reversi::before {
+  left: 40%;
+  background: radial-gradient(circle at 30% 30%, #5b5b5b, #050505 70%);
+}
+
+.preview-reversi::after {
+  left: 56%;
+  background: radial-gradient(circle at 30% 30%, #ffffff, #c7c7c7 70%);
+}
+
+.preview-klotski {
+  background: linear-gradient(135deg, #9c6130, #5a3316);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 8px;
+  padding: 16px;
+  font-size: 20px;
+}
+
+.preview-klotski span {
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.preview-sokoban {
+  background: linear-gradient(135deg, #826131, #453116);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 16px;
+  font-size: 22px;
+}
+
+.preview-sokoban span {
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.preview-word-guess {
+  background: linear-gradient(135deg, #36405a, #1b2132);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 16px;
+  font-size: 18px;
+}
+
+.preview-word-guess span {
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .game-meta,
 .feature-list {
   display: flex;

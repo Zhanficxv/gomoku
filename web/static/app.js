@@ -100,6 +100,24 @@
       case 'whack-a-mole':
         preview.innerHTML = '<span>🕳️</span><span>🕳️</span><span>🕳️</span><span>🕳️</span><span>🐹</span><span>🕳️</span><span>🕳️</span><span>🕳️</span><span>🕳️</span>';
         break;
+      case 'shooter':
+        preview.innerHTML = '<span class="ship">▲</span><span class="enemy">✦</span><span class="enemy">✦</span>';
+        break;
+      case 'sudoku':
+        preview.innerHTML = '<span>5</span><span>3</span><span></span><span>6</span><span></span><span>8</span><span></span><span>9</span><span>1</span>';
+        break;
+      case 'reversi':
+        preview.innerHTML = '<span>●</span><span>○</span><span>●</span><span>○</span>';
+        break;
+      case 'klotski':
+        preview.innerHTML = '<span class="block big"></span><span class="block"></span><span class="block"></span><span class="block small"></span>';
+        break;
+      case 'sokoban':
+        preview.innerHTML = '<span>📦</span><span>🎯</span><span>🧍</span><span>🧱</span>';
+        break;
+      case 'word-guess':
+        preview.innerHTML = '<span>W</span><span>O</span><span>R</span><span>D</span><span class="ok">✓</span><span class="miss">×</span>';
+        break;
       default:
         preview.textContent = game.icon || 'GAME';
     }
