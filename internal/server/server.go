@@ -1,4 +1,4 @@
-// Package server 提供五子棋游戏的 HTTP 接口与静态资源服务。
+// Package server 提供五子棋的 HTTP / WebSocket 接口与静态资源服务。
 package server
 
 import (
@@ -12,13 +12,16 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/cursor/gomoku/internal/ai"
 	"github.com/cursor/gomoku/internal/game"
+	"github.com/cursor/gomoku/internal/room"
 )
 
-// Server 维护多局游戏并提供 HTTP API。
+// Server 维护本地单机对局（REST）以及联机/人机房间（WebSocket）。
 type Server struct {
 	mu       sync.RWMutex
 	games    map[string]*game.Game
+	hub      *room.Hub
 	staticFS fs.FS
 }
 
@@ -26,6 +29,7 @@ type Server struct {
 func New(staticFS fs.FS) *Server {
 	return &Server{
 		games:    make(map[string]*game.Game),
+		hub:      room.NewHub(ai.New()),
 		staticFS: staticFS,
 	}
 }
@@ -33,8 +37,16 @@ func New(staticFS fs.FS) *Server {
 // Routes 返回配置好的 http.Handler。
 func (s *Server) Routes() http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/games", s.handleGames)     // POST 创建
-	mux.HandleFunc("/api/games/", s.handleGameByID) // /api/games/{id}[/move|/undo|/reset]
+
+	// 本地单机对局（保持向后兼容）
+	mux.HandleFunc("/api/games", s.handleGames)
+	mux.HandleFunc("/api/games/", s.handleGameByID)
+
+	// 房间 / 联机 / 人机
+	mux.HandleFunc("/api/rooms", s.handleRooms)
+	mux.HandleFunc("/api/rooms/", s.handleRoomByID)
+	mux.HandleFunc("/ws/rooms/", s.handleWS)
+
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))
@@ -43,7 +55,6 @@ func (s *Server) Routes() http.Handler {
 	if s.staticFS != nil {
 		mux.Handle("/", http.FileServer(http.FS(s.staticFS)))
 	}
-
 	return logRequests(mux)
 }
 
@@ -54,13 +65,14 @@ func logRequests(h http.Handler) http.Handler {
 	})
 }
 
-// 创建游戏：POST /api/games
+// ===== 本地单机 REST =====
+
 func (s *Server) handleGames(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		writeError(w, http.StatusMethodNotAllowed, "仅支持 POST")
 		return
 	}
-	id, err := newID()
+	id, err := newID(8)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "生成 ID 失败")
 		return
@@ -75,7 +87,6 @@ func (s *Server) handleGames(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// /api/games/{id}[/move|/undo|/reset]
 func (s *Server) handleGameByID(w http.ResponseWriter, r *http.Request) {
 	rest := strings.TrimPrefix(r.URL.Path, "/api/games/")
 	parts := strings.SplitN(rest, "/", 2)
@@ -89,7 +100,6 @@ func (s *Server) handleGameByID(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "游戏不存在")
 		return
 	}
-
 	action := ""
 	if len(parts) == 2 {
 		action = parts[1]
@@ -159,12 +169,68 @@ func (s *Server) getGame(id string) *game.Game {
 	return s.games[id]
 }
 
-func newID() (string, error) {
-	var buf [8]byte
-	if _, err := rand.Read(buf[:]); err != nil {
+// ===== 房间 REST（创建 / 列表 / 查询） =====
+
+func (s *Server) handleRooms(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		writeJSON(w, http.StatusOK, map[string]any{"rooms": s.hub.List()})
+	case http.MethodPost:
+		var req struct {
+			Mode       string `json:"mode"`
+			Difficulty string `json:"difficulty"`
+		}
+		_ = json.NewDecoder(r.Body).Decode(&req) // 允许空 body
+		mode, err := room.ParseMode(req.Mode)
+		if err != nil {
+			if req.Mode == "" {
+				mode = room.ModePvP
+			} else {
+				writeError(w, http.StatusBadRequest, err.Error())
+				return
+			}
+		}
+		var diff ai.Difficulty
+		if mode == room.ModeAI {
+			diff = ai.ParseDifficulty(req.Difficulty)
+		}
+		rm, err := s.hub.Create(mode, diff)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		writeJSON(w, http.StatusCreated, map[string]any{"room": rm.Info(), "state": rm.Snapshot()})
+	default:
+		writeError(w, http.StatusMethodNotAllowed, "仅支持 GET 或 POST")
+	}
+}
+
+func (s *Server) handleRoomByID(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "仅支持 GET")
+		return
+	}
+	id := strings.TrimPrefix(r.URL.Path, "/api/rooms/")
+	if id == "" || strings.Contains(id, "/") {
+		writeError(w, http.StatusNotFound, "未指定房间 ID")
+		return
+	}
+	rm := s.hub.Get(id)
+	if rm == nil {
+		writeError(w, http.StatusNotFound, "房间不存在")
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"room": rm.Info(), "state": rm.Snapshot()})
+}
+
+// ===== Helpers =====
+
+func newID(n int) (string, error) {
+	buf := make([]byte, n)
+	if _, err := rand.Read(buf); err != nil {
 		return "", err
 	}
-	return hex.EncodeToString(buf[:]), nil
+	return hex.EncodeToString(buf), nil
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {
