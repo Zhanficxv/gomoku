@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>扫雷 · Minesweeper</title>
+  <link rel="stylesheet" href="/games/minesweeper/styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回游戏大厅</a>
+      <div class="brand">
+        <span class="brand-mark">💣</span>
+        <div>
+          <p class="eyebrow">Minesweeper</p>
+          <h1>扫雷</h1>
+          <p class="muted">小心地雷，逐步推断并清空安全区域。</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="main-column">
+        <section class="hero card">
+          <p class="eyebrow">逻辑推理</p>
+          <h2>左键翻开格子，右键插旗，清空所有安全格即可通关。</h2>
+          <p class="muted">首步不会踩雷，数字表示周围 8 格中的地雷数量。</p>
+        </section>
+
+        <section class="board-card card">
+          <div class="board-head">
+            <div>
+              <h3>雷区</h3>
+              <p class="muted">支持插旗、自动展开空白区和一键重开。</p>
+            </div>
+            <div id="status-chip" class="status-chip">左键翻开，右键插旗</div>
+          </div>
+          <div id="board" class="board" aria-label="扫雷棋盘"></div>
+        </section>
+      </section>
+
+      <aside class="sidebar">
+        <section class="card panel">
+          <h3>状态面板</h3>
+          <div class="stats">
+            <div class="stat"><span class="label">雷数</span><strong id="mine-count" class="value">10</strong></div>
+            <div class="stat"><span class="label">已插旗</span><strong id="flag-count" class="value">0</strong></div>
+            <div class="stat"><span class="label">剩余安全格</span><strong id="safe-left" class="value">0</strong></div>
+            <div class="stat"><span class="label">耗时</span><strong id="timer" class="value">00:00</strong></div>
+          </div>
+        </section>
+
+        <section class="card actions">
+          <button id="btn-new" class="btn primary" type="button">重新开始</button>
+          <button id="btn-reveal" class="btn" type="button">揭示全图</button>
+        </section>
+
+        <section class="card rules">
+          <h3>玩法说明</h3>
+          <ul>
+            <li>左键翻开当前格子。</li>
+            <li>右键切换插旗状态。</li>
+            <li>空白格会自动展开相邻安全区域。</li>
+            <li>点到地雷则立即失败。</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/games/minesweeper/app.js"></script>
+</body>
+</html>

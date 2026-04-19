@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/cursor/gomoku/internal/arcade"
 	"github.com/cursor/gomoku/internal/server"
 )
 
@@ -24,8 +25,8 @@ func main() {
 		log.Fatalf("加载静态资源失败: %v", err)
 	}
 
-	srv := server.New(sub)
-	log.Printf("五子棋服务启动于 http://%s", *addr)
+	srv := server.New(sub, arcade.RegisteredGames())
+	log.Printf("小游戏中心服务启动于 http://%s", *addr)
 	if err := http.ListenAndServe(*addr, srv.Routes()); err != nil {
 		log.Fatalf("HTTP 服务异常退出: %v", err)
 	}

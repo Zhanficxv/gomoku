@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>小游戏中心</title>
+  <title>Arcade Hub · 小游戏中心</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
@@ -14,128 +14,80 @@
         <div>
           <p class="brand-kicker">Arcade Hub</p>
           <h1>小游戏中心</h1>
-          <p class="brand-subtitle">统一入口，按子目录组织每个小游戏。</p>
+          <p class="brand-subtitle">支持注册接入、独立部署、持续扩展的多游戏平台。</p>
         </div>
       </div>
-      <div id="auth-chip" class="auth-chip">游客模式</div>
+      <div class="topbar-side">
+        <div id="auth-chip" class="auth-chip">游客模式</div>
+        <a id="continue-link" class="continue-link hidden" href="/">继续上次游玩</a>
+      </div>
     </header>
 
     <section class="hero-grid">
       <section class="hero-copy card">
-        <p class="eyebrow">多游戏结构</p>
-        <h2>从单一五子棋，升级为可扩展的小游戏大厅。</h2>
+        <p class="eyebrow">游戏注册体系</p>
+        <h2>一个主程序，多个小游戏，既能统一接入，也能单独部署。</h2>
         <p class="hero-text">
-          根目录现在负责大厅入口与导航，五子棋独立放在 <code>/games/gomoku/</code>，
-          新增的连连看放在 <code>/games/linkup/</code>。后续继续扩展更多小游戏时，可以直接按同样结构新增目录。
+          每个小游戏都拥有自己的独立目录、入口页面与静态资源，主程序通过注册表统一展示与挂载。
+          后续继续新增小游戏时，只需要新增目录并注册元数据，即可自动出现在大厅中。
         </p>
         <div class="hero-actions">
-          <a class="btn primary" href="/games/gomoku/" data-game-link="gomoku">进入五子棋</a>
-          <a class="btn ghost" href="/games/linkup/" data-game-link="linkup">试玩连连看</a>
+          <a id="featured-link" class="btn primary hidden" href="/">进入精选游戏</a>
+          <button id="scroll-games" class="btn ghost" type="button">浏览全部游戏</button>
         </div>
-        <div class="hero-metrics">
+        <div id="hero-metrics" class="hero-metrics">
           <div class="metric">
-            <strong>2</strong>
-            <span>当前可玩的小游戏</span>
+            <strong id="metric-count">0</strong>
+            <span>已注册小游戏</span>
           </div>
           <div class="metric">
             <strong>/games/*</strong>
-            <span>统一的子游戏目录结构</span>
+            <span>按子目录独立组织</span>
           </div>
           <div class="metric">
-            <strong>0 构建</strong>
-            <span>继续保持原生静态资源模式</span>
+            <strong>Standalone</strong>
+            <span>每个游戏都可单独部署</span>
           </div>
         </div>
       </section>
 
       <aside class="auth-box card">
-        <p class="eyebrow">快捷入口</p>
-        <h3>继续上次游玩</h3>
+        <p class="eyebrow">扩展约定</p>
+        <h3>注册后自动接入大厅</h3>
         <p class="auth-hint">
-          大厅会记录你最近进入的小游戏；如果你已登录，五子棋仍会自动恢复登录态。
+          主程序通过 <code>/api/arcade/games</code> 提供游戏清单。大厅会自动渲染入口卡片、标签、玩法特性与独立部署路径。
         </p>
-        <div class="auth-actions">
-          <a id="continue-link" class="btn primary wide hidden" href="/">继续上次游玩</a>
-          <a class="btn ghost wide" href="/games/gomoku/" data-game-link="gomoku">打开五子棋</a>
-          <a class="btn ghost wide" href="/games/linkup/" data-game-link="linkup">打开连连看</a>
-        </div>
+        <ul class="registry-list">
+          <li>独立目录：<code>/web/static/games/&lt;slug&gt;/</code></li>
+          <li>独立入口：每个游戏都有自己的 <code>index.html</code></li>
+          <li>统一注册：主程序集中管理路由展示信息</li>
+          <li>后续扩展：新增目录 + 注册即可</li>
+        </ul>
       </aside>
     </section>
 
-    <section class="game-section">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">游戏列表</h2>
-          <p class="section-desc">一个大厅，多个独立小游戏模块。当前包含账号型对弈与单机休闲两种玩法。</p>
-        </div>
-      </div>
-
-      <div class="game-grid">
-        <article class="game-card card">
-          <div class="game-card-head">
-            <span class="badge">账号系统</span>
-            <span class="game-meta">策略对弈 · Canvas 棋盘</span>
-          </div>
-          <div>
-            <h3>五子棋</h3>
-            <p class="card-desc">
-              保留登录、注册、自动恢复会话和专属对局隔离。适合需要账户体系与持续游玩的玩法。
-            </p>
-          </div>
-          <div class="game-preview">
-            <div class="preview-gomoku"></div>
-          </div>
-          <div class="game-meta">
-            <span>登录 / 注册</span>
-            <span>专属对局</span>
-            <span>悔棋 / 重置</span>
-          </div>
-          <a class="btn primary wide" href="/games/gomoku/" data-game-link="gomoku">进入五子棋</a>
-        </article>
-
-        <article class="game-card card">
-          <div class="game-card-head">
-            <span class="badge">休闲益智</span>
-            <span class="game-meta">单机玩法 · 连线消除</span>
-          </div>
-          <div>
-            <h3>连连看</h3>
-            <p class="card-desc">
-              新增第二个小游戏。选中两个相同图块，若路径在两次转弯内可连通即可消除，直到整盘清空。
-            </p>
-          </div>
-          <div class="game-preview">
-            <div class="preview-linkup">
-              <span>🍎</span>
-              <span>🍎</span>
-              <span>🍋</span>
-              <span>🍋</span>
-              <span>🍇</span>
-              <span>🍇</span>
-              <span>🍓</span>
-              <span>🍓</span>
-            </div>
-          </div>
-          <div class="game-meta">
-            <span>两次转弯内连通</span>
-            <span>重新开始 / 洗牌</span>
-            <span>计时与步数</span>
-          </div>
-          <a class="btn primary wide" href="/games/linkup/" data-game-link="linkup">进入连连看</a>
-        </article>
+    <section class="section-head" id="games-section">
+      <div>
+        <p class="eyebrow">全部游戏</p>
+        <h2 class="section-title">游戏大厅展示</h2>
+        <p id="section-desc" class="section-desc">正在加载小游戏列表...</p>
       </div>
     </section>
 
+    <section id="game-grid" class="game-grid" aria-live="polite"></section>
+
     <section class="footer-card card">
-      <h3>整理后的前端目录</h3>
+      <h3>前端目录与部署方式</h3>
       <ul>
-        <li><code>/web/static/index.html</code>：小游戏大厅入口</li>
-        <li><code>/web/static/games/gomoku/</code>：五子棋页面、样式与脚本</li>
-        <li><code>/web/static/games/linkup/</code>：连连看页面、样式与脚本</li>
-        <li>后续新增小游戏时，只需继续在 <code>/web/static/games/</code> 下扩展</li>
+        <li><code>/web/static/index.html</code>：统一大厅首页</li>
+        <li><code>/web/static/games/&lt;slug&gt;/</code>：每个小游戏的独立静态资源目录</li>
+        <li>主程序通过注册表统一展示全部小游戏</li>
+        <li>单个小游戏目录也可以被单独拷贝并作为静态站点部署</li>
       </ul>
     </section>
   </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="/app.js"></script>
 </body>

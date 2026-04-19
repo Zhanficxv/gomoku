@@ -7,10 +7,12 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/cursor/gomoku/internal/arcade"
 )
 
 func newTestServer() *httptest.Server {
-	s := New(nil)
+	s := New(nil, arcade.RegisteredGames())
 	return httptest.NewServer(s.Routes())
 }
 
@@ -112,6 +114,30 @@ func TestRegisterLoginAndLogout(t *testing.T) {
 	}
 	if resp.StatusCode != http.StatusUnauthorized {
 		t.Fatalf("expected 401 after logout, got %d", resp.StatusCode)
+	}
+}
+
+func TestArcadeGamesList(t *testing.T) {
+	ts := newTestServer()
+	defer ts.Close()
+
+	resp, err := http.Get(ts.URL + "/api/arcade/games")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("expected 200 on arcade games, got %d", resp.StatusCode)
+	}
+
+	var payload struct {
+		Games []arcade.Game `json:"games"`
+	}
+	decodeBody(t, resp, &payload)
+	if len(payload.Games) < 6 {
+		t.Fatalf("expected at least 6 games, got %d", len(payload.Games))
+	}
+	if payload.Games[0].Slug == "" || payload.Games[0].Route == "" {
+		t.Fatal("expected game entries to contain slug and route")
 	}
 }
 

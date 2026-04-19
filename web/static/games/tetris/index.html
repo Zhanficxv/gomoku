@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>俄罗斯方块</title>
+  <link rel="stylesheet" href="/games/tetris/styles.css" />
+</head>
+<body>
+  <div class="game-shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回大厅</a>
+      <div class="brand">
+        <span class="brand-mark">🧱</span>
+        <div>
+          <p class="eyebrow">Tetris</p>
+          <h1>俄罗斯方块</h1>
+          <p class="muted">旋转、堆叠、消行，挑战更高分数。</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="board-card card">
+        <div class="section-head">
+          <div>
+            <h2>游戏主屏</h2>
+            <p class="muted">方向键移动，向上旋转，空格硬降，P 键暂停。</p>
+          </div>
+          <div id="status-text" class="status-chip">准备开始</div>
+        </div>
+        <div class="board-wrap">
+          <canvas id="board" width="300" height="600" aria-label="俄罗斯方块主棋盘"></canvas>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <section class="card side-card">
+          <h3>局内信息</h3>
+          <div class="stats">
+            <div class="stat"><span>分数</span><strong id="score">0</strong></div>
+            <div class="stat"><span>等级</span><strong id="level">1</strong></div>
+            <div class="stat"><span>消除行数</span><strong id="lines">0</strong></div>
+            <div class="stat"><span>最佳分数</span><strong id="best-score">0</strong></div>
+          </div>
+        </section>
+
+        <section class="card side-card">
+          <h3>下一个方块</h3>
+          <div class="next-wrap">
+            <canvas id="next-piece" width="160" height="160" aria-label="下一个方块"></canvas>
+          </div>
+        </section>
+
+        <section class="card side-card">
+          <h3>操作</h3>
+          <div class="actions">
+            <button id="btn-start" class="btn primary" type="button">开始 / 重开</button>
+            <button id="btn-pause" class="btn" type="button">暂停 / 继续</button>
+          </div>
+          <ul class="tips">
+            <li>左 / 右：移动方块</li>
+            <li>下：加速下落</li>
+            <li>上：旋转方块</li>
+            <li>空格：直接硬降</li>
+            <li>P：暂停 / 继续</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/games/tetris/app.js"></script>
+</body>
+</html>

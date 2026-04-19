@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2048</title>
+  <link rel="stylesheet" href="/games/2048/styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回游戏大厅</a>
+      <div class="brand">
+        <span class="brand-mark">2048</span>
+        <div>
+          <p class="eyebrow">Number Merge</p>
+          <h1>2048</h1>
+          <p class="muted">滑动合并数字，挑战更高分数。</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="main-column">
+        <section class="hero card">
+          <p class="eyebrow">单机益智</p>
+          <h2>每次移动都会生成新数字，尽可能合成出 2048。</h2>
+          <p class="muted">支持键盘方向键与屏幕按钮操作，自动记录当前分数与本地最高分。</p>
+        </section>
+
+        <section class="board-card card">
+          <div class="board-head">
+            <div>
+              <h3>棋盘</h3>
+              <p class="muted">使用方向键或点击下方按钮移动方块。</p>
+            </div>
+            <div id="status-chip" class="status-chip">继续挑战更高分数</div>
+          </div>
+          <div id="board" class="board" aria-label="2048 棋盘"></div>
+        </section>
+
+        <section class="mobile-controls card">
+          <div class="controls-grid">
+            <button class="ctrl empty" type="button" disabled></button>
+            <button class="ctrl" type="button" data-dir="up">↑</button>
+            <button class="ctrl empty" type="button" disabled></button>
+            <button class="ctrl" type="button" data-dir="left">←</button>
+            <button class="ctrl" type="button" data-dir="down">↓</button>
+            <button class="ctrl" type="button" data-dir="right">→</button>
+          </div>
+        </section>
+      </section>
+
+      <aside class="sidebar">
+        <section class="panel card">
+          <h3>数据面板</h3>
+          <div class="stats">
+            <div class="stat"><span>当前分数</span><strong id="score">0</strong></div>
+            <div class="stat"><span>最高分</span><strong id="best-score">0</strong></div>
+            <div class="stat"><span>最大数字</span><strong id="max-tile">0</strong></div>
+            <div class="stat"><span>步数</span><strong id="move-count">0</strong></div>
+          </div>
+        </section>
+
+        <section class="panel card">
+          <button id="btn-restart" class="btn primary" type="button">重新开始</button>
+        </section>
+
+        <section class="panel card">
+          <h3>玩法说明</h3>
+          <ul class="rules">
+            <li>每次移动后会在空白格生成一个新数字。</li>
+            <li>相同数字相撞时会合并并累加分数。</li>
+            <li>棋盘填满且无法移动时游戏结束。</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/games/2048/app.js"></script>
+</body>
+</html>

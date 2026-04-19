@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/cursor/gomoku/internal/arcade"
 	"github.com/cursor/gomoku/internal/game"
 )
 
@@ -29,16 +30,18 @@ type Server struct {
 	users     map[string]*user
 	usersByID map[string]*user
 	sessions  map[string]session
+	arcade    []arcade.Game
 	staticFS  fs.FS
 }
 
 // New 创建一个 Server，staticFS 为前端静态资源（可为 nil）。
-func New(staticFS fs.FS) *Server {
+func New(staticFS fs.FS, games []arcade.Game) *Server {
 	return &Server{
 		games:     make(map[string]managedGame),
 		users:     make(map[string]*user),
 		usersByID: make(map[string]*user),
 		sessions:  make(map[string]session),
+		arcade:    append([]arcade.Game(nil), games...),
 		staticFS:  staticFS,
 	}
 }
@@ -47,6 +50,7 @@ func New(staticFS fs.FS) *Server {
 func (s *Server) Routes() http.Handler {
 	mux := http.NewServeMux()
 	s.registerAuthRoutes(mux)
+	mux.HandleFunc("/api/arcade/games", s.handleArcadeGames)
 	mux.HandleFunc("/api/games", s.handleGames)     // POST 创建
 	mux.HandleFunc("/api/games/", s.handleGameByID) // /api/games/{id}[/move|/undo|/reset]
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
@@ -59,6 +63,14 @@ func (s *Server) Routes() http.Handler {
 	}
 
 	return logRequests(mux)
+}
+
+func (s *Server) handleArcadeGames(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "仅支持 GET")
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"games": s.arcade})
 }
 
 func logRequests(h http.Handler) http.Handler {
