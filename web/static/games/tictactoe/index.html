@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>井字棋 · Tic Tac Toe</title>
+  <link rel="stylesheet" href="/games/tictactoe/styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回游戏大厅</a>
+      <div class="brand">
+        <span class="brand-mark">×</span>
+        <div>
+          <p class="eyebrow">Tic Tac Toe</p>
+          <h1>井字棋</h1>
+          <p class="muted">单人 / 人机三档难度 · 完美 Minimax 算法</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="board-card card">
+        <div class="board-head">
+          <div id="status-banner" class="status-banner">轮到你（X）落子</div>
+        </div>
+        <div id="board" class="ttt-board" role="grid" aria-label="井字棋"></div>
+        <div class="board-foot">
+          <span class="round-info">第 <strong id="round-num">1</strong> 局 · 比分 <strong id="score-x">0</strong> – <strong id="score-o">0</strong> · 平 <strong id="score-draw">0</strong></span>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="card panel">
+          <h3>对战模式</h3>
+          <div class="mode-tabs" id="mode-tabs">
+            <button class="mode-tab active" data-mode="ai" type="button">人机对战</button>
+            <button class="mode-tab" data-mode="pvp" type="button">双人对战</button>
+          </div>
+        </section>
+
+        <section class="card panel" id="ai-options">
+          <h3>AI 难度</h3>
+          <div class="diff-tabs" id="diff-tabs">
+            <button class="diff-tab" data-diff="easy" type="button">
+              <strong>简单</strong>
+              <span>随机落子</span>
+            </button>
+            <button class="diff-tab active" data-diff="medium" type="button">
+              <strong>中等</strong>
+              <span>启发式 + 偶发失误</span>
+            </button>
+            <button class="diff-tab" data-diff="hard" type="button">
+              <strong>困难</strong>
+              <span>完美 Minimax，永不输</span>
+            </button>
+          </div>
+          <div class="row" style="margin-top:14px">
+            <span>你执子</span>
+            <select id="player-mark">
+              <option value="X" selected>X（先手）</option>
+              <option value="O">O（后手）</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <h3>对局操作</h3>
+          <div class="actions">
+            <button id="btn-restart" class="btn primary wide" type="button">下一局</button>
+            <button id="btn-reset-score" class="btn wide" type="button">清空比分</button>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <h3>玩法</h3>
+          <ul class="rules">
+            <li>3×3 棋盘，X 先手，O 后手。</li>
+            <li>谁先把己方棋子排成一条直线（横/竖/斜）即胜。</li>
+            <li>困难模式下 AI 使用完美算法，最佳结局为平局。</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script src="/games/tictactoe/app.js"></script>
+</body>
+</html>

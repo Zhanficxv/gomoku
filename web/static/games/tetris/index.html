@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>俄罗斯方块 · Tetris</title>
+  <link rel="stylesheet" href="/games/tetris/styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回游戏大厅</a>
+      <div class="brand">
+        <span class="brand-mark">T</span>
+        <div>
+          <p class="eyebrow">Modern Tetris</p>
+          <h1>俄罗斯方块</h1>
+          <p class="muted">SRS 旋转 · 7-Bag 随机 · 持有 · 幽灵 · 硬降 · 锁定延迟</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+
+      <aside class="side-left">
+        <section class="card mini-card">
+          <h3>持有</h3>
+          <canvas id="hold-canvas" width="120" height="120" aria-label="持有方块"></canvas>
+          <p class="muted small">按 <kbd>C</kbd> / <kbd>Shift</kbd> 切换持有</p>
+        </section>
+
+        <section class="card mini-card">
+          <h3>分数</h3>
+          <p id="score" class="big-num">0</p>
+          <div class="stat-row"><span>等级</span><strong id="level">1</strong></div>
+          <div class="stat-row"><span>消除行</span><strong id="lines">0</strong></div>
+          <div class="stat-row"><span>最佳</span><strong id="best">0</strong></div>
+        </section>
+
+        <section class="card mini-card">
+          <h3>本局事件</h3>
+          <div id="event-banner" class="event-banner">准备就绪</div>
+          <p class="muted small">连消、四连、Combo 等都会显示在这里</p>
+        </section>
+      </aside>
+
+      <section class="board-card card">
+        <canvas id="board" width="300" height="600" aria-label="游戏棋盘"></canvas>
+        <div id="overlay" class="overlay hidden">
+          <div>
+            <p id="overlay-title" class="overlay-title">游戏结束</p>
+            <p id="overlay-sub" class="overlay-sub">按下方按钮重新开始</p>
+            <button id="overlay-btn" class="btn primary" type="button">开始新游戏</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side-right">
+        <section class="card mini-card">
+          <h3>下一个</h3>
+          <canvas id="next-canvas" width="120" height="360" aria-label="下一个方块"></canvas>
+        </section>
+
+        <section class="card actions-card">
+          <button id="btn-pause" class="btn" type="button">暂停 (P)</button>
+          <button id="btn-restart" class="btn" type="button">重开 (R)</button>
+        </section>
+
+        <section class="card help-card">
+          <h3>操作</h3>
+          <ul>
+            <li><kbd>←</kbd> <kbd>→</kbd> 左右移动</li>
+            <li><kbd>↓</kbd> 软降</li>
+            <li><kbd>Space</kbd> 硬降</li>
+            <li><kbd>↑</kbd> / <kbd>X</kbd> 顺时针旋转</li>
+            <li><kbd>Z</kbd> 逆时针旋转</li>
+            <li><kbd>C</kbd> / <kbd>Shift</kbd> 持有</li>
+            <li><kbd>P</kbd> 暂停</li>
+            <li><kbd>R</kbd> 重开</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+
+    <nav class="touch-bar" aria-label="触摸操作">
+      <button class="t-btn" data-action="left">◀</button>
+      <button class="t-btn" data-action="right">▶</button>
+      <button class="t-btn" data-action="rotate-ccw">↺</button>
+      <button class="t-btn" data-action="rotate-cw">↻</button>
+      <button class="t-btn" data-action="soft">软降</button>
+      <button class="t-btn primary" data-action="hard">硬降</button>
+      <button class="t-btn" data-action="hold">持有</button>
+    </nav>
+  </div>
+
+  <script src="/games/tetris/app.js"></script>
+</body>
+</html>

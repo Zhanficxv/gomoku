@@ -1,6 +1,15 @@
 (() => {
   'use strict';
 
+  const GAME_LABELS = {
+    gomoku:      '五子棋',
+    linkup:      '连连看',
+    tetris:      '俄罗斯方块',
+    minesweeper: '扫雷',
+    breakout:    '打砖块',
+    tictactoe:   '井字棋',
+  };
+
   const continueLink = document.getElementById('continue-link');
   const gameLinks = Array.from(document.querySelectorAll('[data-game-link]'));
 
@@ -14,9 +23,9 @@
 
   function setContinueLink(game) {
     if (!game || !continueLink) return;
-    const href = `/games/${game}/`;
-    continueLink.href = href;
-    continueLink.textContent = `继续游玩：${game === 'gomoku' ? '五子棋' : '连连看'}`;
+    if (!Object.prototype.hasOwnProperty.call(GAME_LABELS, game)) return;
+    continueLink.href = `/games/${game}/`;
+    continueLink.textContent = `继续游玩：${GAME_LABELS[game]}`;
     continueLink.classList.remove('hidden');
   }
 
