@@ -3,57 +3,161 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>五子棋 · Gomoku</title>
+  <title>五子棋对战大厅</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <div class="app">
-    <header class="header">
-      <h1>五子棋</h1>
-      <p class="subtitle">Go + Vanilla JS · 黑白对弈，五子连珠者胜</p>
+  <div class="page-shell">
+    <header class="hero">
+      <nav class="topbar">
+        <div class="brand">
+          <span class="brand-mark">G</span>
+          <div>
+            <p class="brand-kicker">Gomoku Arena</p>
+            <h1>五子棋对战大厅</h1>
+          </div>
+        </div>
+        <div id="auth-chip" class="auth-chip">未登录</div>
+      </nav>
+
+      <div class="hero-grid">
+        <section class="hero-copy card glass">
+          <p class="eyebrow">完整主界面</p>
+          <h2>登录、注册、开始对局，一页完成。</h2>
+          <p class="hero-text">
+            这是一个带账户体系的五子棋大厅。新用户可直接注册并自动登录，老用户登录后即可进入个人工作台，创建并管理自己的对局。
+          </p>
+          <div class="hero-actions">
+            <button id="hero-start" class="btn primary" type="button">立即开始</button>
+            <button id="hero-switch" class="btn ghost" type="button">切换到注册</button>
+          </div>
+          <ul class="feature-list">
+            <li>内置登录 / 注册流程</li>
+            <li>自动保持登录态</li>
+            <li>个人专属对局隔离</li>
+            <li>响应式棋盘工作台</li>
+          </ul>
+        </section>
+
+        <aside id="auth-panel" class="auth-panel card">
+          <div class="tabs" role="tablist" aria-label="登录注册切换">
+            <button id="tab-login" class="tab active" type="button" data-mode="login">登录</button>
+            <button id="tab-register" class="tab" type="button" data-mode="register">注册</button>
+          </div>
+
+          <form id="login-form" class="auth-form" novalidate>
+            <h3>欢迎回来</h3>
+            <p class="form-desc">登录后继续你的五子棋对局。</p>
+            <label class="field">
+              <span>用户名</span>
+              <input id="login-username" name="username" autocomplete="username" placeholder="请输入用户名" required />
+            </label>
+            <label class="field">
+              <span>密码</span>
+              <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="请输入密码" required />
+            </label>
+            <button id="login-submit" class="btn primary wide" type="submit">登录并进入大厅</button>
+          </form>
+
+          <form id="register-form" class="auth-form hidden" novalidate>
+            <h3>创建账号</h3>
+            <p class="form-desc">注册后将自动登录，并为你创建专属对局空间。</p>
+            <label class="field">
+              <span>昵称</span>
+              <input id="register-name" name="name" autocomplete="nickname" placeholder="例如：棋圣小白" required />
+            </label>
+            <label class="field">
+              <span>用户名</span>
+              <input id="register-username" name="username" autocomplete="username" placeholder="小写字母、数字、下划线" required />
+            </label>
+            <label class="field">
+              <span>密码</span>
+              <input id="register-password" name="password" type="password" autocomplete="new-password" placeholder="至少 6 位" required />
+            </label>
+            <button id="register-submit" class="btn primary wide" type="submit">注册并开始游戏</button>
+          </form>
+
+          <div class="auth-footnote">
+            登录状态保存在浏览器 Cookie 中，刷新页面后仍可自动恢复。
+          </div>
+        </aside>
+      </div>
     </header>
 
-    <main class="main">
-      <section class="board-wrapper">
-        <canvas id="board" width="600" height="600" aria-label="五子棋棋盘"></canvas>
+    <main id="workspace" class="workspace hidden">
+      <section class="workspace-header card glass">
+        <div>
+          <p class="eyebrow">个人工作台</p>
+          <h2 id="welcome-title">欢迎来到你的棋局大厅</h2>
+          <p id="welcome-subtitle" class="muted">创建新对局，开始黑白交锋。</p>
+        </div>
+        <div class="workspace-user">
+          <div class="user-badge">
+            <span class="user-avatar" id="user-avatar">G</span>
+            <div>
+              <div id="user-name" class="user-name">游客</div>
+              <div id="user-username" class="user-username">@guest</div>
+            </div>
+          </div>
+          <button id="btn-logout" class="btn ghost" type="button">退出登录</button>
+        </div>
       </section>
 
-      <aside class="panel">
-        <div class="status-card">
-          <div class="row">
-            <span class="label">游戏 ID</span>
-            <span id="game-id" class="value mono">—</span>
+      <section class="workspace-grid">
+        <section class="board-card card">
+          <div class="section-head">
+            <div>
+              <h3>当前对局</h3>
+              <p>黑棋先行，点击棋盘交叉点落子。</p>
+            </div>
+            <div id="status-banner" class="status-banner playing">对局进行中</div>
           </div>
-          <div class="row">
-            <span class="label">当前回合</span>
-            <span id="turn" class="value">
-              <span class="stone stone-black"></span>
-              <span id="turn-text">黑棋</span>
-            </span>
+          <div class="board-wrapper">
+            <canvas id="board" width="600" height="600" aria-label="五子棋棋盘"></canvas>
           </div>
-          <div class="row">
-            <span class="label">手数</span>
-            <span id="move-count" class="value mono">0</span>
-          </div>
-          <div id="status-banner" class="status-banner playing">对局进行中</div>
-        </div>
+        </section>
 
-        <div class="actions">
-          <button id="btn-new" class="btn primary">新对局</button>
-          <button id="btn-undo" class="btn">悔棋</button>
-          <button id="btn-reset" class="btn">重置棋盘</button>
-        </div>
+        <aside class="panel">
+          <div class="status-card card glass">
+            <div class="row">
+              <span class="label">游戏 ID</span>
+              <span id="game-id" class="value mono">—</span>
+            </div>
+            <div class="row">
+              <span class="label">当前回合</span>
+              <span id="turn" class="value">
+                <span class="stone stone-black"></span>
+                <span id="turn-text">黑棋</span>
+              </span>
+            </div>
+            <div class="row">
+              <span class="label">手数</span>
+              <span id="move-count" class="value mono">0</span>
+            </div>
+            <div class="row">
+              <span class="label">账户</span>
+              <span id="account-name" class="value">—</span>
+            </div>
+          </div>
 
-        <div class="history-card">
-          <h3>落子记录</h3>
-          <ol id="history-list" class="history-list"></ol>
-        </div>
-      </aside>
+          <div class="actions card glass">
+            <button id="btn-new" class="btn primary" type="button">新对局</button>
+            <button id="btn-undo" class="btn" type="button">悔棋</button>
+            <button id="btn-reset" class="btn" type="button">重置棋盘</button>
+          </div>
+
+          <div class="history-card card glass">
+            <div class="section-head slim">
+              <div>
+                <h3>落子记录</h3>
+                <p>实时展示当前对局的完整行动顺序。</p>
+              </div>
+            </div>
+            <ol id="history-list" class="history-list"></ol>
+          </div>
+        </aside>
+      </section>
     </main>
-
-    <footer class="footer">
-      <span>提示：黑棋先行，点击棋盘交叉点落子。</span>
-    </footer>
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>

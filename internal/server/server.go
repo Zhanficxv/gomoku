@@ -11,28 +11,42 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/cursor/gomoku/internal/game"
 )
 
+type managedGame struct {
+	OwnerID   string
+	Game      *game.Game
+	CreatedAt time.Time
+}
+
 // Server 维护多局游戏并提供 HTTP API。
 type Server struct {
-	mu       sync.RWMutex
-	games    map[string]*game.Game
-	staticFS fs.FS
+	mu        sync.RWMutex
+	games     map[string]managedGame
+	users     map[string]*user
+	usersByID map[string]*user
+	sessions  map[string]session
+	staticFS  fs.FS
 }
 
 // New 创建一个 Server，staticFS 为前端静态资源（可为 nil）。
 func New(staticFS fs.FS) *Server {
 	return &Server{
-		games:    make(map[string]*game.Game),
-		staticFS: staticFS,
+		games:     make(map[string]managedGame),
+		users:     make(map[string]*user),
+		usersByID: make(map[string]*user),
+		sessions:  make(map[string]session),
+		staticFS:  staticFS,
 	}
 }
 
 // Routes 返回配置好的 http.Handler。
 func (s *Server) Routes() http.Handler {
 	mux := http.NewServeMux()
+	s.registerAuthRoutes(mux)
 	mux.HandleFunc("/api/games", s.handleGames)     // POST 创建
 	mux.HandleFunc("/api/games/", s.handleGameByID) // /api/games/{id}[/move|/undo|/reset]
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
@@ -60,6 +74,10 @@ func (s *Server) handleGames(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusMethodNotAllowed, "仅支持 POST")
 		return
 	}
+	u, ok := s.requireUser(w, r)
+	if !ok {
+		return
+	}
 	id, err := newID()
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "生成 ID 失败")
@@ -67,10 +85,15 @@ func (s *Server) handleGames(w http.ResponseWriter, r *http.Request) {
 	}
 	g := game.New()
 	s.mu.Lock()
-	s.games[id] = g
+	s.games[id] = managedGame{
+		OwnerID:   u.ID,
+		Game:      g,
+		CreatedAt: time.Now(),
+	}
 	s.mu.Unlock()
 	writeJSON(w, http.StatusCreated, map[string]any{
 		"id":    id,
+		"owner": u.public(),
 		"state": g.State(),
 	})
 }
@@ -84,7 +107,12 @@ func (s *Server) handleGameByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := parts[0]
-	g := s.getGame(id)
+	u, ok := s.requireUser(w, r)
+	if !ok {
+		return
+	}
+
+	g := s.getOwnedGame(id, u.ID)
 	if g == nil {
 		writeError(w, http.StatusNotFound, "游戏不存在")
 		return
@@ -153,10 +181,14 @@ func (s *Server) handleMove(w http.ResponseWriter, r *http.Request, id string, g
 	writeJSON(w, http.StatusOK, map[string]any{"id": id, "state": state})
 }
 
-func (s *Server) getGame(id string) *game.Game {
+func (s *Server) getOwnedGame(id, ownerID string) *game.Game {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	return s.games[id]
+	entry, exists := s.games[id]
+	if !exists || entry.OwnerID != ownerID {
+		return nil
+	}
+	return entry.Game
 }
 
 func newID() (string, error) {

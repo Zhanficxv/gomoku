@@ -16,6 +16,9 @@
 - 悔棋 / 重置棋盘 / 新对局
 - 落子记录列表
 - 多对局隔离，每个对局通过唯一 ID 维护
+- 登录 / 注册 / 退出登录
+- 基于 Cookie 的会话保持，刷新页面后自动恢复登录态
+- 用户间对局隔离，每位用户仅能访问自己的游戏
 - 响应式布局，移动端友好
 
 ## 目录结构
@@ -44,7 +47,7 @@
 go run .
 ```
 
-默认监听 `:8080`，浏览器打开 [http://localhost:8080](http://localhost:8080) 即可开始对弈。
+默认监听 `:8080`，浏览器打开 [http://localhost:8080](http://localhost:8080) 即可进入对战大厅。
 
 ### 2. 构建单二进制
 
@@ -65,19 +68,57 @@ go test ./...
 
 所有响应均为 JSON。下列示例使用 `curl`。
 
-| 方法 | 路径                          | 说明                       |
-| ---- | ----------------------------- | -------------------------- |
-| POST | `/api/games`                  | 创建一局新游戏，返回 ID    |
-| GET  | `/api/games/{id}`             | 获取当前对局状态           |
-| POST | `/api/games/{id}/move`        | 落子（自动按当前回合方）   |
-| POST | `/api/games/{id}/undo`        | 悔最后一步                 |
-| POST | `/api/games/{id}/reset`       | 重置棋盘但保留对局 ID      |
-| GET  | `/healthz`                    | 健康检查                   |
+| 方法 | 路径                          | 说明                               |
+| ---- | ----------------------------- | ---------------------------------- |
+| POST | `/api/auth/register`          | 注册用户并自动登录                 |
+| POST | `/api/auth/login`             | 用户登录                           |
+| POST | `/api/auth/logout`            | 退出登录                           |
+| GET  | `/api/auth/me`                | 获取当前登录用户                   |
+| POST | `/api/games`                  | 创建一局新游戏，返回 ID            |
+| GET  | `/api/games/{id}`             | 获取当前对局状态                   |
+| POST | `/api/games/{id}/move`        | 落子（自动按当前回合方）           |
+| POST | `/api/games/{id}/undo`        | 悔最后一步                         |
+| POST | `/api/games/{id}/reset`       | 重置棋盘但保留对局 ID              |
+| GET  | `/healthz`                    | 健康检查                           |
+
+> 除 `/api/auth/*` 与 `/healthz` 外，其余接口都需要先登录，并且只能访问当前用户自己的对局。
+
+### 注册
+
+```bash
+curl -i -X POST http://localhost:8080/api/auth/register \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"测试用户","username":"tester_01","password":"secret123"}'
+```
+
+返回示例：
+
+```json
+{
+  "user": {
+    "id": "ab12cd34ef567890",
+    "name": "测试用户",
+    "username": "tester_01",
+    "created_at": "2026-04-19T04:00:00Z"
+  }
+}
+```
+
+注册或登录成功后，服务端会通过 `Set-Cookie` 写入会话 Cookie。
+
+### 登录
+
+```bash
+curl -i -X POST http://localhost:8080/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"tester_01","password":"secret123"}'
+```
 
 ### 创建对局
 
 ```bash
-curl -X POST http://localhost:8080/api/games
+curl -X POST http://localhost:8080/api/games \
+  --cookie "gomoku_session=<你的会话 Cookie>"
 ```
 
 返回：
@@ -85,6 +126,12 @@ curl -X POST http://localhost:8080/api/games
 ```json
 {
   "id": "ab12cd34ef567890",
+  "owner": {
+    "id": "ab12cd34ef567890",
+    "name": "测试用户",
+    "username": "tester_01",
+    "created_at": "2026-04-19T04:00:00Z"
+  },
   "state": { "board": [...], "turn": 1, "status": "playing", "history": [], "size": 15 }
 }
 ```
@@ -94,6 +141,7 @@ curl -X POST http://localhost:8080/api/games
 ```bash
 curl -X POST -H 'Content-Type: application/json' \
   -d '{"x":7,"y":7}' \
+  --cookie "gomoku_session=<你的会话 Cookie>" \
   http://localhost:8080/api/games/<id>/move
 ```
 
@@ -116,12 +164,14 @@ curl -X POST -H 'Content-Type: application/json' \
 错误以 JSON 返回 `{"error": "信息"}`，常见状态码：
 
 - `400`：坐标非法 / 位置已占 / 不该轮到此方 / 没有可悔的棋
+- `401`：未登录或登录态失效
 - `404`：游戏 ID 不存在
 - `409`：游戏已结束
 
 ## 技术说明
 
 - 游戏逻辑使用读写锁保护，所有对局可并发访问
+- 用户信息与会话默认保存在内存中，适合示例项目与单机部署
 - 胜负判定通过四个方向（横、竖、两条对角线）回溯连子数实现
 - 前端 Canvas 自适应高 DPI 屏幕（按 `devicePixelRatio` 缩放）
 - 静态资源通过 `embed.FS` 打包，部署只需单个二进制
