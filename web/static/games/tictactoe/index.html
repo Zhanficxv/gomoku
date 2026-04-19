@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>井字棋</title>
+  <link rel="stylesheet" href="/games/tictactoe/styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回游戏大厅</a>
+      <div class="brand">
+        <span class="brand-mark">XO</span>
+        <div>
+          <p class="eyebrow">Tic Tac Toe</p>
+          <h1>井字棋</h1>
+          <p class="muted">简单直接的双人轮流对局小游戏。</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="main-column">
+        <section class="hero card">
+          <p class="eyebrow">轻量对弈</p>
+          <h2>轮流落子，先连成三子的一方获胜。</h2>
+          <p class="muted">支持本地双人、比分统计和快速重开，适合作为即开即玩的轻量小游戏。</p>
+        </section>
+
+        <section class="board-card card">
+          <div class="board-head">
+            <div>
+              <h3>对局棋盘</h3>
+              <p class="muted">点击空白格落子，X 先手。</p>
+            </div>
+            <div id="status" class="status-chip">当前回合：X</div>
+          </div>
+          <div id="board" class="board" aria-label="井字棋棋盘"></div>
+        </section>
+      </section>
+
+      <aside class="sidebar">
+        <section class="card panel">
+          <h3>比分统计</h3>
+          <div class="stats">
+            <div class="stat"><span class="label">X 胜场</span><strong id="score-x" class="value">0</strong></div>
+            <div class="stat"><span class="label">O 胜场</span><strong id="score-o" class="value">0</strong></div>
+            <div class="stat"><span class="label">平局</span><strong id="score-draw" class="value">0</strong></div>
+          </div>
+        </section>
+
+        <section class="card actions">
+          <button id="btn-restart" class="btn primary" type="button">重新开始本局</button>
+          <button id="btn-reset-score" class="btn" type="button">清空比分</button>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/games/tictactoe/app.js"></script>
+</body>
+</html>

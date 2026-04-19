@@ -419,6 +419,75 @@ code {
   background: rgba(255, 255, 255, 0.28);
 }
 
+.preview-tictactoe {
+  background: linear-gradient(135deg, #5676ff, #3242a8);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 18px;
+  font-size: 30px;
+}
+
+.preview-memory-match {
+  background: linear-gradient(135deg, #ff8fc0, #d65792);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 16px;
+  font-size: 22px;
+}
+
+.preview-breakout {
+  background: linear-gradient(135deg, #ff9c5b, #c65d17);
+  position: relative;
+}
+
+.preview-breakout::before,
+.preview-breakout::after {
+  content: "";
+  position: absolute;
+}
+
+.preview-breakout::before {
+  width: 60%;
+  height: 12px;
+  left: 20%;
+  bottom: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.preview-breakout::after {
+  width: 14px;
+  height: 14px;
+  top: 28px;
+  left: 48%;
+  border-radius: 50%;
+  background: #fff2c9;
+  box-shadow:
+    -110px 24px 0 -2px rgba(255, 255, 255, 0.35),
+    -72px 24px 0 -2px rgba(255, 255, 255, 0.35),
+    -34px 24px 0 -2px rgba(255, 255, 255, 0.35),
+    4px 24px 0 -2px rgba(255, 255, 255, 0.35),
+    42px 24px 0 -2px rgba(255, 255, 255, 0.35),
+    80px 24px 0 -2px rgba(255, 255, 255, 0.35),
+    -110px 54px 0 -2px rgba(255, 255, 255, 0.2),
+    -72px 54px 0 -2px rgba(255, 255, 255, 0.2),
+    -34px 54px 0 -2px rgba(255, 255, 255, 0.2),
+    4px 54px 0 -2px rgba(255, 255, 255, 0.2),
+    42px 54px 0 -2px rgba(255, 255, 255, 0.2),
+    80px 54px 0 -2px rgba(255, 255, 255, 0.2);
+}
+
+.preview-whack-a-mole {
+  background: linear-gradient(135deg, #55a25c, #235d2a);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 16px;
+  font-size: 24px;
+}
+
 .game-meta,
 .feature-list {
   display: flex;

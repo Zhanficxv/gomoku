@@ -7,7 +7,7 @@
 - 大厅首页自动展示所有已注册小游戏
 - 支持继续扩展更多小游戏
 
-当前已接入：
+当前已接入 10 个小游戏：
 
 - 五子棋（Gomoku）
 - 连连看（Link Up）
@@ -15,6 +15,10 @@
 - 贪吃蛇（Snake）
 - 扫雷（Minesweeper）
 - 俄罗斯方块（Tetris）
+- 井字棋（Tic Tac Toe）
+- 记忆翻牌（Memory Match）
+- 打砖块（Breakout）
+- 打地鼠（Whack-a-Mole）
 
 ## 核心设计
 
@@ -64,7 +68,9 @@ web/static/games/<slug>/
 
 ## 当前游戏列表
 
-### 五子棋
+### 账号 / 策略类
+
+#### 五子棋
 
 - 登录 / 注册 / 自动恢复登录态
 - 用户专属对局隔离
@@ -76,7 +82,21 @@ web/static/games/<slug>/
 /games/gomoku/
 ```
 
-### 连连看
+#### 井字棋
+
+- 双人同屏轮流落子
+- 自动判定胜负与平局
+- 支持快速重开
+
+路径：
+
+```text
+/games/tictactoe/
+```
+
+### 休闲 / 益智类
+
+#### 连连看
 
 - 相同图块在两次转弯内可连通时消除
 - 支持重新开始、洗牌、计时、步数
@@ -87,7 +107,7 @@ web/static/games/<slug>/
 /games/linkup/
 ```
 
-### 2048
+#### 2048
 
 - 4x4 数字合成棋盘
 - 键盘方向键 / 屏幕按钮控制
@@ -99,20 +119,7 @@ web/static/games/<slug>/
 /games/2048/
 ```
 
-### 贪吃蛇
-
-- Canvas 实现
-- 方向键 / WASD 控制
-- 空格暂停 / 继续
-- 分数、长度、速度、最高分
-
-路径：
-
-```text
-/games/snake/
-```
-
-### 扫雷
+#### 扫雷
 
 - 左键翻格、右键插旗
 - 首步安全
@@ -125,7 +132,34 @@ web/static/games/<slug>/
 /games/minesweeper/
 ```
 
-### 俄罗斯方块
+#### 记忆翻牌
+
+- 成对翻牌匹配
+- 统计步数、匹配数与用时
+- 翻错后自动翻回
+
+路径：
+
+```text
+/games/memory-match/
+```
+
+### 街机 / 动作类
+
+#### 贪吃蛇
+
+- Canvas 实现
+- 方向键 / WASD 控制
+- 空格暂停 / 继续
+- 分数、长度、速度、最高分
+
+路径：
+
+```text
+/games/snake/
+```
+
+#### 俄罗斯方块
 
 - 方块旋转、移动、硬降
 - 消行、等级、分数、最佳成绩
@@ -135,6 +169,30 @@ web/static/games/<slug>/
 
 ```text
 /games/tetris/
+```
+
+#### 打砖块
+
+- 挡板反弹小球
+- 多层砖块清除
+- 生命、分数、关卡推进
+
+路径：
+
+```text
+/games/breakout/
+```
+
+#### 打地鼠
+
+- 倒计时内快速点击地鼠
+- 连击与分数统计
+- 节奏逐渐加快
+
+路径：
+
+```text
+/games/whack-a-mole/
 ```
 
 ## 目录结构
@@ -162,7 +220,11 @@ web/static/games/<slug>/
         ├── 2048/
         ├── snake/
         ├── minesweeper/
-        └── tetris/
+        ├── tetris/
+        ├── tictactoe/
+        ├── memory-match/
+        ├── breakout/
+        └── whack-a-mole/
 ```
 
 ## 快速开始
@@ -219,7 +281,7 @@ go test ./...
 | GET  | `/api/games/{id}`      | 获取五子棋对局状态     |
 | POST | `/api/games/{id}/move` | 五子棋落子             |
 | POST | `/api/games/{id}/undo` | 五子棋悔最后一步       |
-| POST | `/api/games/{id}/reset` | 重置五子棋棋盘         |
+| POST | `/api/games/{id}/reset`| 重置五子棋棋盘         |
 
 > 五子棋 API 需要先登录，并且只能访问当前用户自己的对局。
 

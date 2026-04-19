@@ -88,6 +88,18 @@
       case 'tetris':
         preview.textContent = '🧱';
         break;
+      case 'tictactoe':
+        preview.innerHTML = '<span>✕</span><span>○</span><span>✕</span><span>○</span><span>✕</span><span>○</span><span>✕</span><span>○</span><span>✕</span>';
+        break;
+      case 'memory-match':
+        preview.innerHTML = '<span>🎴</span><span>🎴</span><span>🎯</span><span>🎯</span><span>🎁</span><span>🎁</span><span>🎵</span><span>🎵</span>';
+        break;
+      case 'breakout':
+        preview.innerHTML = '<span class="brick"></span><span class="brick"></span><span class="brick"></span><span class="ball"></span><span class="paddle"></span>';
+        break;
+      case 'whack-a-mole':
+        preview.innerHTML = '<span>🕳️</span><span>🕳️</span><span>🕳️</span><span>🕳️</span><span>🐹</span><span>🕳️</span><span>🕳️</span><span>🕳️</span><span>🕳️</span>';
+        break;
       default:
         preview.textContent = game.icon || 'GAME';
     }

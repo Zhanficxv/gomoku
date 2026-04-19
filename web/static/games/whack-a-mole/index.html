@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>打地鼠</title>
+  <link rel="stylesheet" href="/games/whack-a-mole/styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回游戏大厅</a>
+      <div class="brand">
+        <span class="brand-mark">🔨</span>
+        <div>
+          <p class="eyebrow">Whack a Mole</p>
+          <h1>打地鼠</h1>
+          <p class="muted">在限定时间内击中更多冒头的地鼠。</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="main-column">
+        <section class="hero card">
+          <p class="eyebrow">反应小游戏</p>
+          <h2>眼疾手快，连击越多，节奏越快。</h2>
+          <p class="muted">点击冒出来的地鼠获得分数，错过太多会打断节奏。支持重新开始与倒计时挑战。</p>
+        </section>
+
+        <section class="board-card card">
+          <div class="board-head">
+            <div>
+              <h3>地鼠场</h3>
+              <p class="muted">看到地鼠就立刻点击，尽量打出更高连击。</p>
+            </div>
+            <div id="status-text" class="status-text">点击开始游戏</div>
+          </div>
+          <div id="board" class="board" aria-label="打地鼠棋盘"></div>
+        </section>
+      </section>
+
+      <aside class="sidebar">
+        <section class="card panel">
+          <h3>当前成绩</h3>
+          <div class="stats">
+            <div class="stat"><span class="label">分数</span><strong id="score" class="value">0</strong></div>
+            <div class="stat"><span class="label">连击</span><strong id="combo" class="value">0</strong></div>
+            <div class="stat"><span class="label">剩余时间</span><strong id="time-left" class="value">30</strong></div>
+            <div class="stat"><span class="label">最佳分数</span><strong id="best-score" class="value">0</strong></div>
+          </div>
+        </section>
+
+        <section class="card actions">
+          <button id="btn-start" class="btn primary" type="button">开始 / 重开</button>
+        </section>
+
+        <section class="card rules">
+          <h3>玩法说明</h3>
+          <ul>
+            <li>点击冒出来的地鼠获得分数。</li>
+            <li>连续击中可获得更高连击。</li>
+            <li>时间结束后统计总分。</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/games/whack-a-mole/app.js"></script>
+</body>
+</html>

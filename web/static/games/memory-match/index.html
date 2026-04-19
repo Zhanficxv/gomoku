@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>记忆翻牌</title>
+  <link rel="stylesheet" href="/games/memory-match/styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回游戏大厅</a>
+      <div class="brand">
+        <span class="brand-mark">🃏</span>
+        <div>
+          <p class="eyebrow">Memory Match</p>
+          <h1>记忆翻牌</h1>
+          <p class="muted">考验短时记忆，尽量用更少步数完成全部配对。</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="main-column">
+        <section class="hero card">
+          <p class="eyebrow">休闲记忆</p>
+          <h2>翻开两张相同卡牌即可消除，全部配对完成即通关。</h2>
+          <p class="muted">每局会随机打乱卡面顺序，支持重新开始、计时和步数统计。</p>
+        </section>
+
+        <section class="board-card card">
+          <div class="board-head">
+            <div>
+              <h3>卡牌区域</h3>
+              <p class="muted">记住每张卡牌位置，尽可能减少试错次数。</p>
+            </div>
+            <div id="status-chip" class="status-chip">请选择第一张卡牌</div>
+          </div>
+          <div id="board" class="board" aria-label="记忆翻牌棋盘"></div>
+        </section>
+      </section>
+
+      <aside class="sidebar">
+        <section class="card panel">
+          <h3>本局状态</h3>
+          <div class="stats">
+            <div class="stat"><span class="label">步数</span><strong class="value" id="moves">0</strong></div>
+            <div class="stat"><span class="label">已配对</span><strong class="value" id="pairs">0</strong></div>
+            <div class="stat"><span class="label">剩余卡牌</span><strong class="value" id="cards-left">16</strong></div>
+            <div class="stat"><span class="label">耗时</span><strong class="value" id="timer">00:00</strong></div>
+          </div>
+        </section>
+
+        <section class="card actions">
+          <button id="btn-restart" class="btn primary" type="button">重新开始</button>
+        </section>
+
+        <section class="card rules">
+          <h3>玩法说明</h3>
+          <ul>
+            <li>每次翻开两张牌进行配对。</li>
+            <li>相同卡牌会保留在正面。</li>
+            <li>不同卡牌会短暂显示后自动翻回。</li>
+            <li>所有卡牌都完成配对后通关。</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/games/memory-match/app.js"></script>
+</body>
+</html>
