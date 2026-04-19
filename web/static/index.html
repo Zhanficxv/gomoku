@@ -10,7 +10,7 @@
   <div class="app">
     <header class="header">
       <h1>五子棋</h1>
-      <p class="subtitle">Go + Vanilla JS · 黑白对弈，五子连珠者胜</p>
+      <p class="subtitle">本地 / 联机 / 人机三种模式 · 黑白对弈，五子连珠者胜</p>
     </header>
 
     <main class="main">
@@ -19,10 +19,60 @@
       </section>
 
       <aside class="panel">
-        <div class="status-card">
+        <div class="card mode-card">
+          <h3>对局设置</h3>
+          <div class="mode-tabs" role="tablist">
+            <button class="mode-tab active" data-mode="local" role="tab">本地双人</button>
+            <button class="mode-tab" data-mode="ai" role="tab">人机对战</button>
+            <button class="mode-tab" data-mode="pvp" role="tab">联机对战</button>
+          </div>
+
+          <div id="ai-options" class="options hidden">
+            <div class="row">
+              <span class="label">难度</span>
+              <select id="difficulty" class="value">
+                <option value="easy">简单</option>
+                <option value="medium" selected>中等</option>
+                <option value="hard">困难</option>
+              </select>
+            </div>
+            <div class="row">
+              <span class="label">你执</span>
+              <select id="ai-color" class="value">
+                <option value="black" selected>黑棋（先手）</option>
+                <option value="white">白棋</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="pvp-options" class="options hidden">
+            <div class="row">
+              <span class="label">房间号</span>
+              <input id="room-code" class="value mono input" placeholder="留空创建新房间" />
+            </div>
+            <div class="row">
+              <span class="label">期望角色</span>
+              <select id="pvp-role" class="value">
+                <option value="auto" selected>自动</option>
+                <option value="black">黑棋</option>
+                <option value="white">白棋</option>
+                <option value="spectator">观战</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="btn-start" class="btn primary block">开始新对局</button>
+        </div>
+
+        <div class="card status-card">
           <div class="row">
-            <span class="label">游戏 ID</span>
-            <span id="game-id" class="value mono">—</span>
+            <span class="label">房间</span>
+            <span id="room-id" class="value mono">—</span>
+            <button id="btn-copy" class="btn small" title="复制房间链接">复制</button>
+          </div>
+          <div class="row">
+            <span class="label">你方</span>
+            <span id="my-role" class="value">本地</span>
           </div>
           <div class="row">
             <span class="label">当前回合</span>
@@ -35,16 +85,15 @@
             <span class="label">手数</span>
             <span id="move-count" class="value mono">0</span>
           </div>
-          <div id="status-banner" class="status-banner playing">对局进行中</div>
+          <div id="status-banner" class="status-banner playing">尚未开始</div>
         </div>
 
-        <div class="actions">
-          <button id="btn-new" class="btn primary">新对局</button>
+        <div class="card actions-card">
           <button id="btn-undo" class="btn">悔棋</button>
           <button id="btn-reset" class="btn">重置棋盘</button>
         </div>
 
-        <div class="history-card">
+        <div class="card history-card">
           <h3>落子记录</h3>
           <ol id="history-list" class="history-list"></ol>
         </div>
@@ -52,7 +101,7 @@
     </main>
 
     <footer class="footer">
-      <span>提示：黑棋先行，点击棋盘交叉点落子。</span>
+      <span>提示：本地双人共享一台设备；联机对战将房间号发给好友即可同台对弈；人机对战可在不同难度间切换。</span>
     </footer>
   </div>
 
