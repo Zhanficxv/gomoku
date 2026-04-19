@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>扫雷 · Minesweeper</title>
+  <link rel="stylesheet" href="/games/minesweeper/styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回游戏大厅</a>
+      <div class="brand">
+        <span class="brand-mark">M</span>
+        <div>
+          <p class="eyebrow">Classic Minesweeper</p>
+          <h1>扫雷</h1>
+          <p class="muted">首点保证安全 · 插旗标记 · 自动泛洪展开</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="board-card card">
+        <div class="board-head">
+          <div class="meta-group">
+            <div class="meta-pill">
+              <span class="emoji">💣</span>
+              <strong id="mines-left">0</strong>
+            </div>
+            <div class="meta-pill">
+              <span class="emoji">⏱</span>
+              <strong id="timer">000</strong>
+            </div>
+          </div>
+          <button id="face-btn" class="face-btn" type="button" aria-label="重新开始">😀</button>
+          <div class="meta-group">
+            <div class="meta-pill">
+              <span class="emoji">🚩</span>
+              <strong id="flags-placed">0</strong>
+            </div>
+          </div>
+        </div>
+        <div id="board-wrap" class="board-wrap">
+          <div id="board" class="board" aria-label="扫雷棋盘"></div>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="card panel">
+          <h3>难度</h3>
+          <div class="diff-tabs" role="tablist" id="diff-tabs">
+            <button class="diff-tab active" data-diff="easy" role="tab">
+              <strong>初级</strong>
+              <span>9×9 · 10 雷</span>
+            </button>
+            <button class="diff-tab" data-diff="medium" role="tab">
+              <strong>中级</strong>
+              <span>16×16 · 40 雷</span>
+            </button>
+            <button class="diff-tab" data-diff="hard" role="tab">
+              <strong>高级</strong>
+              <span>30×16 · 99 雷</span>
+            </button>
+            <button class="diff-tab" data-diff="custom" role="tab">
+              <strong>自定义</strong>
+              <span>自由调整</span>
+            </button>
+          </div>
+
+          <div id="custom-options" class="custom-options hidden">
+            <label class="row">
+              <span>列数</span>
+              <input id="custom-cols" type="number" min="5" max="40" value="20" />
+            </label>
+            <label class="row">
+              <span>行数</span>
+              <input id="custom-rows" type="number" min="5" max="40" value="14" />
+            </label>
+            <label class="row">
+              <span>地雷</span>
+              <input id="custom-mines" type="number" min="1" value="50" />
+            </label>
+            <button id="custom-apply" class="btn primary wide" type="button">应用并开始</button>
+          </div>
+
+          <p class="muted small">切换难度会立即开始一局新游戏。</p>
+        </section>
+
+        <section class="card panel">
+          <h3>本局最佳</h3>
+          <div class="stat-row"><span>初级</span><strong id="best-easy">—</strong></div>
+          <div class="stat-row"><span>中级</span><strong id="best-medium">—</strong></div>
+          <div class="stat-row"><span>高级</span><strong id="best-hard">—</strong></div>
+        </section>
+
+        <section class="card panel">
+          <h3>玩法</h3>
+          <ul class="rules">
+            <li>左键揭开方格；首次点击保证安全。</li>
+            <li>右键 / 长按插旗标记可疑雷。</li>
+            <li>已揭开数字处，<kbd>双击</kbd>可同时翻开周围。</li>
+            <li>揭开所有非雷格即胜。</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="/games/minesweeper/app.js"></script>
+</body>
+</html>

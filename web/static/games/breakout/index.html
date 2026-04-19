@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>打砖块 · Breakout</title>
+  <link rel="stylesheet" href="/games/breakout/styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="back-link" href="/">← 返回游戏大厅</a>
+      <div class="brand">
+        <span class="brand-mark">B</span>
+        <div>
+          <p class="eyebrow">Arcade Breakout</p>
+          <h1>打砖块</h1>
+          <p class="muted">多关卡 · 掉落道具 · 激光武器 · 多球玩法</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="board-card card">
+        <canvas id="game" width="640" height="480" aria-label="游戏画面"></canvas>
+        <div id="overlay" class="overlay">
+          <div>
+            <p id="overlay-title" class="overlay-title">准备开始</p>
+            <p id="overlay-sub" class="overlay-sub">点击或按 Space / ↑ 发射小球</p>
+            <button id="overlay-btn" class="btn primary" type="button">开始游戏</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="card panel">
+          <h3>本局信息</h3>
+          <div class="stats-grid">
+            <div class="stat">
+              <span>分数</span>
+              <strong id="score">0</strong>
+            </div>
+            <div class="stat">
+              <span>关卡</span>
+              <strong id="level">1 / 5</strong>
+            </div>
+            <div class="stat">
+              <span>剩余球</span>
+              <strong id="lives">3</strong>
+            </div>
+            <div class="stat">
+              <span>最佳</span>
+              <strong id="best">0</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <h3>当前道具</h3>
+          <div id="powerups" class="powerups">
+            <span class="muted small">没有激活的道具</span>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <h3>道具说明</h3>
+          <ul class="legend">
+            <li><span class="badge p-multi">×3</span> 多球分裂</li>
+            <li><span class="badge p-wide">▭</span> 桨加宽</li>
+            <li><span class="badge p-slow">⏳</span> 慢速球</li>
+            <li><span class="badge p-laser">⚡</span> 激光武器</li>
+            <li><span class="badge p-life">♥</span> 加 1 命</li>
+            <li><span class="badge p-shrink">▫</span> 桨变窄（陷阱）</li>
+            <li><span class="badge p-fast">⏩</span> 快速球（陷阱）</li>
+          </ul>
+        </section>
+
+        <section class="card panel">
+          <h3>操作</h3>
+          <ul class="rules">
+            <li>鼠标 / 触摸：左右滑动控制桨</li>
+            <li><kbd>←</kbd> <kbd>→</kbd>：左右移动</li>
+            <li><kbd>Space</kbd> / <kbd>↑</kbd>：发射 / 激光开火</li>
+            <li><kbd>P</kbd>：暂停</li>
+            <li><kbd>R</kbd>：重开本关</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script src="/games/breakout/app.js"></script>
+</body>
+</html>

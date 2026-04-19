@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>小游戏中心</title>
+  <title>小游戏中心 · Arcade Hub</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
@@ -14,7 +14,7 @@
         <div>
           <p class="brand-kicker">Arcade Hub</p>
           <h1>小游戏中心</h1>
-          <p class="brand-subtitle">统一入口，按子目录组织每个小游戏。</p>
+          <p class="brand-subtitle">六款经典小游戏，统一入口，一键开玩。</p>
         </div>
       </div>
       <div id="auth-chip" class="auth-chip">游客模式</div>
@@ -22,19 +22,20 @@
 
     <section class="hero-grid">
       <section class="hero-copy card">
-        <p class="eyebrow">多游戏结构</p>
-        <h2>从单一五子棋，升级为可扩展的小游戏大厅。</h2>
+        <p class="eyebrow">六款小游戏 · 全部更新</p>
+        <h2>从五子棋开始，已扩展为六款经典玩法集合。</h2>
         <p class="hero-text">
-          根目录现在负责大厅入口与导航，五子棋独立放在 <code>/games/gomoku/</code>，
-          新增的连连看放在 <code>/games/linkup/</code>。后续继续扩展更多小游戏时，可以直接按同样结构新增目录。
+          五子棋、连连看保留原有体验；新增 <strong>俄罗斯方块</strong>（SRS 旋转 + 持有 + 幽灵 + 硬降）、
+          <strong>扫雷</strong>（四档难度 + 首击安全 + 双击翻开）、<strong>打砖块</strong>
+          （5 关卡 + 7 种掉落道具）与 <strong>井字棋</strong>（人机三档难度，含完美 Minimax）。
         </p>
         <div class="hero-actions">
-          <a class="btn primary" href="/games/gomoku/" data-game-link="gomoku">进入五子棋</a>
-          <a class="btn ghost" href="/games/linkup/" data-game-link="linkup">试玩连连看</a>
+          <a class="btn primary" href="/games/tetris/" data-game-link="tetris">来一局俄罗斯方块</a>
+          <a class="btn ghost" href="/games/breakout/" data-game-link="breakout">试玩打砖块</a>
         </div>
         <div class="hero-metrics">
           <div class="metric">
-            <strong>2</strong>
+            <strong>6</strong>
             <span>当前可玩的小游戏</span>
           </div>
           <div class="metric">
@@ -43,7 +44,7 @@
           </div>
           <div class="metric">
             <strong>0 构建</strong>
-            <span>继续保持原生静态资源模式</span>
+            <span>原生 HTML / CSS / JS</span>
           </div>
         </div>
       </section>
@@ -52,12 +53,13 @@
         <p class="eyebrow">快捷入口</p>
         <h3>继续上次游玩</h3>
         <p class="auth-hint">
-          大厅会记录你最近进入的小游戏；如果你已登录，五子棋仍会自动恢复登录态。
+          大厅会记录你最近进入的小游戏，登录五子棋后会话也会自动恢复。
         </p>
         <div class="auth-actions">
           <a id="continue-link" class="btn primary wide hidden" href="/">继续上次游玩</a>
-          <a class="btn ghost wide" href="/games/gomoku/" data-game-link="gomoku">打开五子棋</a>
-          <a class="btn ghost wide" href="/games/linkup/" data-game-link="linkup">打开连连看</a>
+          <a class="btn ghost wide" href="/games/gomoku/" data-game-link="gomoku">五子棋</a>
+          <a class="btn ghost wide" href="/games/tictactoe/" data-game-link="tictactoe">井字棋（含人机）</a>
+          <a class="btn ghost wide" href="/games/minesweeper/" data-game-link="minesweeper">扫雷（四档难度）</a>
         </div>
       </aside>
     </section>
@@ -66,14 +68,15 @@
       <div class="section-head">
         <div>
           <h2 class="section-title">游戏列表</h2>
-          <p class="section-desc">一个大厅，多个独立小游戏模块。当前包含账号型对弈与单机休闲两种玩法。</p>
+          <p class="section-desc">点击任意卡片进入对应小游戏。所有游戏都做了响应式适配，桌面、平板与手机均可游玩。</p>
         </div>
       </div>
 
       <div class="game-grid">
+
         <article class="game-card card">
           <div class="game-card-head">
-            <span class="badge">账号系统</span>
+            <span class="badge badge-account">账号系统</span>
             <span class="game-meta">策略对弈 · Canvas 棋盘</span>
           </div>
           <div>
@@ -101,19 +104,13 @@
           <div>
             <h3>连连看</h3>
             <p class="card-desc">
-              新增第二个小游戏。选中两个相同图块，若路径在两次转弯内可连通即可消除，直到整盘清空。
+              选中两个相同图块，若路径在两次转弯内可连通即可消除，直到整盘清空。
             </p>
           </div>
           <div class="game-preview">
             <div class="preview-linkup">
-              <span>🍎</span>
-              <span>🍎</span>
-              <span>🍋</span>
-              <span>🍋</span>
-              <span>🍇</span>
-              <span>🍇</span>
-              <span>🍓</span>
-              <span>🍓</span>
+              <span>🍎</span><span>🍎</span><span>🍋</span><span>🍋</span>
+              <span>🍇</span><span>🍇</span><span>🍓</span><span>🍓</span>
             </div>
           </div>
           <div class="game-meta">
@@ -123,6 +120,118 @@
           </div>
           <a class="btn primary wide" href="/games/linkup/" data-game-link="linkup">进入连连看</a>
         </article>
+
+        <article class="game-card card">
+          <div class="game-card-head">
+            <span class="badge badge-new">完整重做</span>
+            <span class="game-meta">街机 · 落体堆叠</span>
+          </div>
+          <div>
+            <h3>俄罗斯方块</h3>
+            <p class="card-desc">
+              标准 SRS 旋转规则 + 7-Bag 随机 + 持有 + 幽灵预览 + 硬降 + 锁定延迟，桌面键盘与手机触屏均完整支持。
+            </p>
+          </div>
+          <div class="game-preview">
+            <div class="preview-tetris">
+              <span style="background:#5cdcff"></span>
+              <span style="background:#ffd966"></span>
+              <span style="background:#c780ff"></span>
+              <span style="background:#7fe09a"></span>
+              <span style="background:#ff7e8b"></span>
+              <span style="background:#6896ff"></span>
+              <span style="background:#ffa86b"></span>
+            </div>
+          </div>
+          <div class="game-meta">
+            <span>SRS 标准旋转</span>
+            <span>持有 / 幽灵 / 硬降</span>
+            <span>等级与计分</span>
+          </div>
+          <a class="btn primary wide" href="/games/tetris/" data-game-link="tetris">进入俄罗斯方块</a>
+        </article>
+
+        <article class="game-card card">
+          <div class="game-card-head">
+            <span class="badge badge-new">完整重做</span>
+            <span class="game-meta">逻辑推理 · 经典玩法</span>
+          </div>
+          <div>
+            <h3>扫雷</h3>
+            <p class="card-desc">
+              初级 / 中级 / 高级 / 自定义 四档难度，首次点击保证安全，支持插旗、问号、双击翻开等经典操作。
+            </p>
+          </div>
+          <div class="game-preview">
+            <div class="preview-mines">
+              <span class="mn n0"></span><span class="mn n1">1</span><span class="mn n2">2</span><span class="mn n3">3</span>
+              <span class="mn n0"></span><span class="mn n1">1</span><span class="mn">🚩</span><span class="mn">💣</span>
+              <span class="mn n0"></span><span class="mn n0"></span><span class="mn n1">1</span><span class="mn n1">1</span>
+              <span class="mn n0"></span><span class="mn n1">1</span><span class="mn n2">2</span><span class="mn">🚩</span>
+            </div>
+          </div>
+          <div class="game-meta">
+            <span>四档难度</span>
+            <span>首击安全</span>
+            <span>双击翻开</span>
+          </div>
+          <a class="btn primary wide" href="/games/minesweeper/" data-game-link="minesweeper">进入扫雷</a>
+        </article>
+
+        <article class="game-card card">
+          <div class="game-card-head">
+            <span class="badge badge-new">完整重做</span>
+            <span class="game-meta">街机 · 反弹消除</span>
+          </div>
+          <div>
+            <h3>打砖块</h3>
+            <p class="card-desc">
+              5 个手工设计的关卡 + 7 种掉落道具：多球分裂、桨加宽 / 变窄、慢 / 快球、激光武器、加命，节奏轻快带挑战。
+            </p>
+          </div>
+          <div class="game-preview">
+            <div class="preview-breakout">
+              <div class="bk-row" style="--c1:#ffd966;--c2:#7fe09a;--c3:#ff7e8b"></div>
+              <div class="bk-row" style="--c1:#7fe09a;--c2:#5cdcff;--c3:#ffd966"></div>
+              <div class="bk-row" style="--c1:#ff7e8b;--c2:#ffd966;--c3:#7fe09a"></div>
+              <div class="bk-paddle"></div>
+              <div class="bk-ball"></div>
+            </div>
+          </div>
+          <div class="game-meta">
+            <span>5 关卡</span>
+            <span>7 种道具</span>
+            <span>键盘 / 鼠标 / 触屏</span>
+          </div>
+          <a class="btn primary wide" href="/games/breakout/" data-game-link="breakout">进入打砖块</a>
+        </article>
+
+        <article class="game-card card">
+          <div class="game-card-head">
+            <span class="badge badge-new">完整重做</span>
+            <span class="game-meta">人机对战 · 完美算法</span>
+          </div>
+          <div>
+            <h3>井字棋</h3>
+            <p class="card-desc">
+              支持双人 与 人机三档难度（随机 / 启发式 / 完美 Minimax）。困难模式下 AI 永远不会输，最佳结局是平局。
+            </p>
+          </div>
+          <div class="game-preview">
+            <div class="preview-ttt">
+              <span class="x">×</span><span></span><span class="o">○</span>
+              <span></span><span class="x">×</span><span></span>
+              <span class="o">○</span><span></span><span class="x">×</span>
+            </div>
+          </div>
+          <div class="game-meta">
+            <span>三档 AI</span>
+            <span>双人对战</span>
+            <span>比分记录</span>
+          </div>
+          <a class="btn primary wide" href="/games/tictactoe/" data-game-link="tictactoe">进入井字棋</a>
+        </article>
+
       </div>
     </section>
 
@@ -130,9 +239,12 @@
       <h3>整理后的前端目录</h3>
       <ul>
         <li><code>/web/static/index.html</code>：小游戏大厅入口</li>
-        <li><code>/web/static/games/gomoku/</code>：五子棋页面、样式与脚本</li>
-        <li><code>/web/static/games/linkup/</code>：连连看页面、样式与脚本</li>
-        <li>后续新增小游戏时，只需继续在 <code>/web/static/games/</code> 下扩展</li>
+        <li><code>/web/static/games/gomoku/</code>：五子棋（含登录系统）</li>
+        <li><code>/web/static/games/linkup/</code>：连连看</li>
+        <li><code>/web/static/games/tetris/</code>：俄罗斯方块（SRS · 持有 · 幽灵）</li>
+        <li><code>/web/static/games/minesweeper/</code>：扫雷（四档难度）</li>
+        <li><code>/web/static/games/breakout/</code>：打砖块（多关卡 + 道具）</li>
+        <li><code>/web/static/games/tictactoe/</code>：井字棋（人机三档难度）</li>
       </ul>
     </section>
   </div>
