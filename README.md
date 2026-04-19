@@ -1,131 +1,142 @@
 # Gomoku · 五子棋
 
-一个完整的五子棋（Gomoku）小项目，包含：
+一个完整可玩的五子棋项目，支持三种模式：
 
-- **后端**：Go 1.22，使用标准库 `net/http` 提供 RESTful API，支持多对局并发管理。
-- **前端**：原生 HTML + CSS + Canvas + JavaScript，无任何前端框架与构建步骤。
-- **测试**：游戏核心逻辑与 HTTP API 的单元测试。
-- **部署**：单二进制即可运行，前端通过 `embed` 嵌入二进制。
+- **本地双人**：同一台设备轮流落子。
+- **人机对战**：内置 AI 引擎，可选 **简单 / 中等 / 困难** 三档难度。
+- **联机对战**：基于 WebSocket 的房间制实时对战，支持观战与房间链接分享。
+
+技术栈：Go 1.22 + 标准库 `net/http` + `gorilla/websocket`，前端为原生 HTML / CSS / Canvas / JS，无需任何构建工具。前端通过 `embed` 嵌入二进制，最终单文件即可部署。
 
 ## 功能特性
 
-- 15×15 标准棋盘，黑棋先行
-- 五子（含长连）连珠即胜，自动判定平局
-- 高亮最后一手与获胜连线
-- 鼠标悬停预览落子位置
-- 悔棋 / 重置棋盘 / 新对局
-- 落子记录列表
-- 多对局隔离，每个对局通过唯一 ID 维护
-- 响应式布局，移动端友好
+- 15×15 标准棋盘，黑棋先行；五连即胜（含长连），自动判定平局
+- 高亮最后一手与获胜连线，鼠标悬停半透明预览落子位置
+- 三种模式 + 三档 AI 难度，可在前端面板自由切换
+- 联机对战：自动分配黑/白角色，多余客户端进入观战；支持悔棋 / 重置广播
+- 房间链接 (`?room=xxxxxx`) 一键分享给好友直接加入
+- 落子记录、当前回合、玩家在线状态实时同步
+- 响应式布局，移动端可用
 
 ## 目录结构
 
 ```
 .
-├── main.go                  # 服务入口（embed 前端静态资源）
+├── main.go                  # 服务入口（embed 嵌入前端）
 ├── internal/
-│   ├── game/                # 五子棋核心逻辑（无外部依赖）
-│   │   ├── game.go
-│   │   └── game_test.go
-│   └── server/              # HTTP API
-│       ├── server.go
-│       └── server_test.go
-└── web/static/              # 前端静态资源（HTML/CSS/JS）
-    ├── index.html
-    ├── styles.css
-    └── app.js
+│   ├── game/                # 五子棋核心规则与状态机
+│   ├── ai/                  # AI 引擎（启发式 + Alpha-Beta）
+│   ├── room/                # 房间 / Hub（用于 WS 多房间管理）
+│   └── server/              # HTTP + WebSocket 接口
+└── web/static/              # 前端：index.html / styles.css / app.js
 ```
 
 ## 快速开始
 
-### 1. 运行（需要 Go 1.22+）
+需要 Go 1.22+。
 
 ```bash
 go run .
+# 浏览器访问 http://localhost:8080
 ```
 
-默认监听 `:8080`，浏览器打开 [http://localhost:8080](http://localhost:8080) 即可开始对弈。
-
-### 2. 构建单二进制
+或构建单二进制：
 
 ```bash
 go build -o gomoku .
 ./gomoku -addr :8080
 ```
 
-可使用环境变量 `GOMOKU_ADDR` 或 `PORT` 配置监听地址。
+支持 `GOMOKU_ADDR` 与 `PORT` 环境变量。
 
-### 3. 运行测试
+## 运行测试
 
 ```bash
 go test ./...
 ```
 
-## HTTP API
+测试覆盖范围：游戏规则、四方向胜负判定、悔棋/重置、AI 三档难度行为、房间状态机、WebSocket 端到端流程。
 
-所有响应均为 JSON。下列示例使用 `curl`。
+## 三种对局模式
 
-| 方法 | 路径                          | 说明                       |
-| ---- | ----------------------------- | -------------------------- |
-| POST | `/api/games`                  | 创建一局新游戏，返回 ID    |
-| GET  | `/api/games/{id}`             | 获取当前对局状态           |
-| POST | `/api/games/{id}/move`        | 落子（自动按当前回合方）   |
-| POST | `/api/games/{id}/undo`        | 悔最后一步                 |
-| POST | `/api/games/{id}/reset`       | 重置棋盘但保留对局 ID      |
-| GET  | `/healthz`                    | 健康检查                   |
+### 1. 本地双人
 
-### 创建对局
+同一台设备共用棋盘，使用经典的 REST API：
 
-```bash
-curl -X POST http://localhost:8080/api/games
-```
+| 方法 | 路径                          | 说明                    |
+| ---- | ----------------------------- | ----------------------- |
+| POST | `/api/games`                  | 创建本地对局            |
+| GET  | `/api/games/{id}`             | 查询当前状态            |
+| POST | `/api/games/{id}/move`        | 落子                    |
+| POST | `/api/games/{id}/undo`        | 悔最后一步              |
+| POST | `/api/games/{id}/reset`       | 重置棋盘                |
 
-返回：
+### 2. 人机对战 / 3. 联机对战
+
+通过房间 + WebSocket 实现。
+
+| 方法 | 路径                | 说明                                                     |
+| ---- | ------------------- | -------------------------------------------------------- |
+| POST | `/api/rooms`        | 创建房间。Body: `{"mode":"ai","difficulty":"hard"}`，或 `{"mode":"pvp"}` |
+| GET  | `/api/rooms`        | 列出所有房间                                             |
+| GET  | `/api/rooms/{id}`   | 获取房间快照                                             |
+| WS   | `/ws/rooms/{id}?role=auto|black|white|spectator` | 加入房间并实时通信 |
+
+#### WebSocket 协议
+
+客户端 → 服务端（文本 JSON 帧）：
 
 ```json
-{
-  "id": "ab12cd34ef567890",
-  "state": { "board": [...], "turn": 1, "status": "playing", "history": [], "size": 15 }
-}
+{ "type": "move", "x": 7, "y": 7 }
+{ "type": "undo" }
+{ "type": "reset" }
+{ "type": "state" }
 ```
 
-### 落子
+服务端 → 客户端：
+
+```json
+{ "type": "state", "data": { "room": {...}, "game": {...}, "you": {"role":"black","client_id":"..."} } }
+{ "type": "error", "data": { "message": "还没轮到你" } }
+```
+
+`game` 字段与本地模式 `state` 完全一致：
+
+- `board`：`15 × 15`，0=空 / 1=黑 / 2=白
+- `turn`、`status`、`winner`、`win_line`、`history`、`size`
+
+#### 角色分配规则
+
+- **PvP**：第一个连接者拿到黑棋，第二个拿到白棋；后续连接者进入观战；可通过 `?role=` 参数指定期望角色。
+- **AI**：第一位人类玩家加入时确定颜色（默认黑棋先手；可通过 `?role=white` 让 AI 执黑先手），AI 自动占据另一方。
+- 中途断开：座位会被释放，下次有人加入将自动顶上。
+
+## AI 难度说明
+
+AI 引擎位于 `internal/ai`，对外仅暴露 `Engine.Choose(snapshot, color, difficulty)`。三档实现：
+
+| 难度    | 策略                                                                 |
+| ------- | -------------------------------------------------------------------- |
+| `easy`   | 邻域随机，但优先吃掉立即获胜或必须堵的点                              |
+| `medium` | 启发式贪心：枚举候选点，按"攻 + 守"的形态评分（活四 / 冲四 / 活三 …）选最优 |
+| `hard`   | 在 medium 评估之上对前 8 个候选做 **2 层 Alpha-Beta 搜索**，并对候选裁剪    |
+
+评估函数对每条线段按 5 / 活四 / 冲四 / 活三 / 眠三 / 活二 / 眠二 / 活一 等模式打分，并加入中心偏置。算法是无禁手版本，长连同样视为胜负。
+
+## 房间分享
+
+人机或联机房间创建后，前端"房间"行有"复制"按钮，可复制类似 `https://your-host/?room=abc123` 的链接。其他人打开该链接将自动以联机模式加入。
+
+## 部署
+
+由于前端通过 `//go:embed all:web/static` 打包进二进制，部署只需运行单二进制：
 
 ```bash
-curl -X POST -H 'Content-Type: application/json' \
-  -d '{"x":7,"y":7}' \
-  http://localhost:8080/api/games/<id>/move
+GOOS=linux GOARCH=amd64 go build -o gomoku .
+scp gomoku user@host:/srv/gomoku/
+ssh user@host /srv/gomoku/gomoku -addr :80
 ```
-
-字段说明：
-- `x`, `y`：坐标，范围 `[0, 14]`
-- `stone`（可选）：1 表示黑，2 表示白；省略时使用当前回合方
-
-### 状态字段
-
-- `board`：`15 × 15` 二维数组，0=空 / 1=黑 / 2=白
-- `turn`：下一手方（1=黑 / 2=白）
-- `status`：`playing` / `black_win` / `white_win` / `draw`
-- `winner`：胜者颜色（无则为 0）
-- `win_line`：获胜的 5 子坐标列表
-- `history`：完整落子序列
-- `size`：棋盘尺寸
-
-### 错误响应
-
-错误以 JSON 返回 `{"error": "信息"}`，常见状态码：
-
-- `400`：坐标非法 / 位置已占 / 不该轮到此方 / 没有可悔的棋
-- `404`：游戏 ID 不存在
-- `409`：游戏已结束
-
-## 技术说明
-
-- 游戏逻辑使用读写锁保护，所有对局可并发访问
-- 胜负判定通过四个方向（横、竖、两条对角线）回溯连子数实现
-- 前端 Canvas 自适应高 DPI 屏幕（按 `devicePixelRatio` 缩放）
-- 静态资源通过 `embed.FS` 打包，部署只需单个二进制
 
 ## 许可
 
-本项目以 MIT 许可发布。
+MIT License.
