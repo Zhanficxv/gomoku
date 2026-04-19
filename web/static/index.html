@@ -2,107 +2,170 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0f1424" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>五子棋 · Gomoku</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <div class="app">
-    <header class="header">
-      <h1>五子棋</h1>
-      <p class="subtitle">本地 / 联机 / 人机三种模式 · 黑白对弈，五子连珠者胜</p>
+
+    <!-- 顶部状态条：在所有视口都常驻 -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-logo" aria-hidden="true">
+          <span class="dot dot-black"></span>
+          <span class="dot dot-white"></span>
+        </span>
+        <h1>五子棋</h1>
+        <span id="mode-badge" class="badge badge-accent">本地双人</span>
+      </div>
+      <div class="topbar-meta">
+        <span id="room-id" class="badge badge-mono" title="房间号">—</span>
+        <button id="btn-copy" class="icon-btn" title="复制房间链接" aria-label="复制房间链接">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+        </button>
+      </div>
     </header>
 
+    <!-- 主体：棋盘 + 侧边面板 -->
     <main class="main">
-      <section class="board-wrapper">
-        <canvas id="board" width="600" height="600" aria-label="五子棋棋盘"></canvas>
-      </section>
 
-      <aside class="panel">
-        <div class="card mode-card">
-          <h3>对局设置</h3>
-          <div class="mode-tabs" role="tablist">
-            <button class="mode-tab active" data-mode="local" role="tab">本地双人</button>
-            <button class="mode-tab" data-mode="ai" role="tab">人机对战</button>
-            <button class="mode-tab" data-mode="pvp" role="tab">联机对战</button>
-          </div>
-
-          <div id="ai-options" class="options hidden">
-            <div class="row">
-              <span class="label">难度</span>
-              <select id="difficulty" class="value">
-                <option value="easy">简单</option>
-                <option value="medium" selected>中等</option>
-                <option value="hard">困难</option>
-              </select>
-            </div>
-            <div class="row">
-              <span class="label">你执</span>
-              <select id="ai-color" class="value">
-                <option value="black" selected>黑棋（先手）</option>
-                <option value="white">白棋</option>
-              </select>
-            </div>
-          </div>
-
-          <div id="pvp-options" class="options hidden">
-            <div class="row">
-              <span class="label">房间号</span>
-              <input id="room-code" class="value mono input" placeholder="留空创建新房间" />
-            </div>
-            <div class="row">
-              <span class="label">期望角色</span>
-              <select id="pvp-role" class="value">
-                <option value="auto" selected>自动</option>
-                <option value="black">黑棋</option>
-                <option value="white">白棋</option>
-                <option value="spectator">观战</option>
-              </select>
-            </div>
-          </div>
-
-          <button id="btn-start" class="btn primary block">开始新对局</button>
+      <!-- 棋盘区 -->
+      <section class="board-section">
+        <div class="board-wrapper">
+          <canvas id="board" aria-label="五子棋棋盘"></canvas>
         </div>
 
-        <div class="card status-card">
-          <div class="row">
-            <span class="label">房间</span>
-            <span id="room-id" class="value mono">—</span>
-            <button id="btn-copy" class="btn small" title="复制房间链接">复制</button>
-          </div>
-          <div class="row">
-            <span class="label">你方</span>
-            <span id="my-role" class="value">本地</span>
-          </div>
-          <div class="row">
-            <span class="label">当前回合</span>
-            <span id="turn" class="value">
-              <span class="stone stone-black"></span>
+        <!-- 棋盘上方的小型状态条（手机优先，桌面也保留） -->
+        <div class="board-status">
+          <div id="status-banner" class="status-banner playing">尚未开始</div>
+          <div class="status-meta">
+            <span class="meta-item">
+              <span id="turn-indicator" class="stone stone-black" aria-hidden="true"></span>
               <span id="turn-text">黑棋</span>
             </span>
+            <span class="meta-divider" aria-hidden="true"></span>
+            <span class="meta-item" title="手数">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              <span id="move-count">0</span>
+            </span>
+            <span class="meta-divider" aria-hidden="true"></span>
+            <span class="meta-item" id="my-role-mini">本地双人</span>
           </div>
-          <div class="row">
-            <span class="label">手数</span>
-            <span id="move-count" class="value mono">0</span>
+        </div>
+      </section>
+
+      <!-- 侧边面板（桌面） / 折叠卡片（手机） -->
+      <aside class="panel">
+
+        <details class="card collapsible" open>
+          <summary>
+            <span class="card-title">对局设置</span>
+            <span class="chevron" aria-hidden="true">▾</span>
+          </summary>
+          <div class="card-body">
+            <div class="mode-tabs" role="tablist">
+              <button class="mode-tab active" data-mode="local" role="tab">
+                <span class="tab-icon" aria-hidden="true">👥</span>
+                <span class="tab-label">本地</span>
+              </button>
+              <button class="mode-tab" data-mode="ai" role="tab">
+                <span class="tab-icon" aria-hidden="true">🤖</span>
+                <span class="tab-label">人机</span>
+              </button>
+              <button class="mode-tab" data-mode="pvp" role="tab">
+                <span class="tab-icon" aria-hidden="true">🌐</span>
+                <span class="tab-label">联机</span>
+              </button>
+            </div>
+
+            <div id="ai-options" class="options hidden">
+              <label class="row">
+                <span class="label">难度</span>
+                <select id="difficulty" class="value">
+                  <option value="easy">简单</option>
+                  <option value="medium" selected>中等</option>
+                  <option value="hard">困难</option>
+                </select>
+              </label>
+              <label class="row">
+                <span class="label">你执</span>
+                <select id="ai-color" class="value">
+                  <option value="black" selected>黑棋（先手）</option>
+                  <option value="white">白棋</option>
+                </select>
+              </label>
+            </div>
+
+            <div id="pvp-options" class="options hidden">
+              <label class="row">
+                <span class="label">房间号</span>
+                <input id="room-code" class="value mono input" placeholder="留空创建新房间" autocomplete="off" />
+              </label>
+              <label class="row">
+                <span class="label">期望角色</span>
+                <select id="pvp-role" class="value">
+                  <option value="auto" selected>自动分配</option>
+                  <option value="black">黑棋</option>
+                  <option value="white">白棋</option>
+                  <option value="spectator">观战</option>
+                </select>
+              </label>
+            </div>
+
+            <button id="btn-start" class="btn primary block">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              开始新对局
+            </button>
           </div>
-          <div id="status-banner" class="status-banner playing">尚未开始</div>
+        </details>
+
+        <div class="card desktop-only">
+          <div class="card-body actions-row">
+            <button id="btn-side-undo" class="btn" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              悔棋
+            </button>
+            <button id="btn-side-reset" class="btn" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7l3-2.3v8h-8l3-2.3"></path><path d="M21 12a9 9 0 0 1-15 6.7l-3 2.3v-8h8l-3 2.3"></path></svg>
+              重置
+            </button>
+          </div>
         </div>
 
-        <div class="card actions-card">
-          <button id="btn-undo" class="btn">悔棋</button>
-          <button id="btn-reset" class="btn">重置棋盘</button>
-        </div>
+        <details class="card collapsible" open>
+          <summary>
+            <span class="card-title">落子记录</span>
+            <span id="history-count" class="badge badge-mono">0</span>
+            <span class="chevron" aria-hidden="true">▾</span>
+          </summary>
+          <div class="card-body">
+            <ol id="history-list" class="history-list" aria-live="polite"></ol>
+          </div>
+        </details>
 
-        <div class="card history-card">
-          <h3>落子记录</h3>
-          <ol id="history-list" class="history-list"></ol>
-        </div>
       </aside>
     </main>
 
-    <footer class="footer">
-      <span>提示：本地双人共享一台设备；联机对战将房间号发给好友即可同台对弈；人机对战可在不同难度间切换。</span>
-    </footer>
+    <!-- 底部固定操作栏 -->
+    <nav class="bottom-bar" aria-label="对局操作">
+      <button id="btn-bottom-undo" class="bb-btn" type="button">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+        <span>悔棋</span>
+      </button>
+      <button id="btn-bottom-reset" class="bb-btn" type="button">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7l3-2.3v8h-8l3-2.3"></path><path d="M21 12a9 9 0 0 1-15 6.7l-3 2.3v-8h8l-3 2.3"></path></svg>
+        <span>重置</span>
+      </button>
+      <button id="btn-bottom-start" class="bb-btn primary" type="button">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <span>新对局</span>
+      </button>
+    </nav>
+
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
